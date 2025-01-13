@@ -69,6 +69,16 @@ function install_node_exporter {
 function init_node_exporter {
 	$SG_CORE_CONTAINER_EXECUTABLE run -d --network host --pid host -v "/:/host:ro,rslave" --name node_exporter $NODE_EXPORTER_CONTAINER_IMAGE --path.rootfs=/host
 }
+
+### pushgateway ###
+function install_pushgateway {
+	$SG_CORE_CONTAINER_EXECUTABLE pull $PUSHGATEWAY_CONTAINER_IMAGE
+}
+
+function init_pushgateway {
+	$SG_CORE_CONTAINER_EXECUTABLE -d -p 9091:9091 --name pushgateway $PUSHGATEWAY_CONTAINER_IMAGE
+}
+
 # check for service enabled
 if is_service_enabled sg-core; then
 
@@ -164,5 +174,31 @@ if is_service_enabled sg-core; then
 
 	fi
 	rm -rf $SG_CORE_WORKDIR
+fi
+if [[ "$PUSHGATEWAY_ENABLE" = "True" ]]; then
+        if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
+                # Set up system services
+                echo_summary "Configuring system services pushgateway"
+                install_container_executable
+
+        elif [[ "$1" == "stack" && "$2" == "install" ]]; then
+                # Perform installation of service source
+                echo_summary "Installing pushgateway"
+                install_pushgateway
+
+        elif [[ "$1" == "stack" && "$2" == "extra" ]]; then
+                # Initialize and start the pushgateway service
+                echo_summary "Initializing pushgateway"
+                init_pushgateway
+        fi
+
+        if [[ "$1" == "unstack" ]]; then
+                $SG_CORE_CONTAINER_EXECUTABLE stop pushgateway
+                $SG_CORE_CONTAINER_EXECUTABLE rm -f pushgateway
+        fi
+
+        if [[ "$1" == "clean" ]]; then
+                $SG_CORE_CONTAINER_EXECUTABLE rmi $PUSHGATEWAY_CONTAINER_IMAGE
+        fi
 fi
 
