@@ -1,10 +1,10 @@
 function install_container_executable {
 	if install_package podman; then
-		SG_CORE_CONTAINER_EXECUTABLE="podman"
+		SG_CORE_CONTAINER_EXECUTABLE=$(which podman)
 	elif install_package docker.io; then
 		sudo chown stack:docker /var/run/docker.sock
 		sudo usermod -aG docker stack
-		SG_CORE_CONTAINER_EXECUTABLE="docker"
+		SG_CORE_CONTAINER_EXECUTABLE=$(which docker)
 	else
 		echo_summary "Couldn't install podman or docker"
 		return 1
@@ -25,7 +25,7 @@ function configure_sg-core {
 }
 
 function init_sg-core {
-	$SG_CORE_CONTAINER_EXECUTABLE run -v $SG_CORE_CONF:/etc/sg-core.conf.yaml --network host --name sg-core -d $SG_CORE_CONTAINER_IMAGE
+	run_process "sg-core" "$SG_CORE_CONTAINER_EXECUTABLE run -v $SG_CORE_CONF:/etc/sg-core.conf.yaml --network host --name sg-core $SG_CORE_CONTAINER_IMAGE"
 }
 
 ### prometheus ###
