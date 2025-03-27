@@ -29,10 +29,6 @@ function init_sg-core {
 }
 
 ### prometheus ###
-function install_prometheus {
-	$SG_CORE_CONTAINER_EXECUTABLE pull $PROMETHEUS_CONTAINER_IMAGE
-}
-
 function configure_prometheus {
 	BASE_CONFIG_FILE=$SG_CORE_DIR/devstack/prometheus-files/prometheus.yml
 	RESULT_CONFIG_FILE=$SG_CORE_WORKDIR/prometheus.yml
@@ -51,14 +47,11 @@ function configure_prometheus {
 		echo "      - targets: [$PROMETHEUS_CUSTOM_SCRAPE_TARGETS]" >> $RESULT_CONFIG_FILE
 	fi
 
-	sudo mkdir -p `dirname $PROMETHEUS_CONF`
-	sudo cp $RESULT_CONFIG_FILE $PROMETHEUS_CONF
+	sudo mkdir -p `dirname $PROMETHEUS_CONFIG_FILE`
+	sudo cp $RESULT_CONFIG_FILE $PROMETHEUS_CONFIG_FILE
 
-	sudo cp $SG_CORE_DIR/devstack/observabilityclient-files/prometheus.yaml /etc/openstack/prometheus.yaml
-}
-
-function init_prometheus {
-	$SG_CORE_CONTAINER_EXECUTABLE run -v $PROMETHEUS_CONF:/etc/prometheus/prometheus.yml --network host --name prometheus -d $PROMETHEUS_CONTAINER_IMAGE --config.file=/etc/prometheus/prometheus.yml --web.enable-admin-api
+	sudo mkdir -p $PROMETHEUS_CLIENT_CONF_DIR
+	sudo cp $SG_CORE_DIR/devstack/observabilityclient-files/prometheus.yaml $PROMETHEUS_CLIENT_CONF_DIR/prometheus.yaml
 }
 
 ### node_exporter ###
@@ -69,6 +62,7 @@ function install_node_exporter {
 function init_node_exporter {
 	$SG_CORE_CONTAINER_EXECUTABLE run -d --network host --pid host -v "/:/host:ro,rslave" --name node_exporter $NODE_EXPORTER_CONTAINER_IMAGE --path.rootfs=/host
 }
+
 # check for service enabled
 if is_service_enabled sg-core; then
 
@@ -105,36 +99,11 @@ if is_service_enabled sg-core; then
 		fi
 	fi
 	if [[ $PROMETHEUS_ENABLE = true ]]; then
-		    if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
-			# Set up system services
-			echo_summary "Configuring system services prometheus"
-			install_container_executable
-
-		elif [[ "$1" == "stack" && "$2" == "install" ]]; then
-			# Perform installation of service source
-			echo_summary "Installing prometheus"
-			install_prometheus
-
-		elif [[ "$1" == "stack" && "$2" == "post-config" ]]; then
-			# Configure after the other layer 1 and 2 services have been configured
-			echo_summary "Configuring prometheus"
+		if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
+			# Create configuration file for Prometheus deployed by devstack-plugin-prometheus
+			echo_summary "Creating Prometheus configuration file for sg-core scraping"
 			configure_prometheus
-
-		elif [[ "$1" == "stack" && "$2" == "extra" ]]; then
-			# Initialize and start the prometheus service
-			echo_summary "Initializing prometheus"
-			init_prometheus
 		fi
-
-		if [[ "$1" == "unstack" ]]; then
-			$SG_CORE_CONTAINER_EXECUTABLE stop prometheus
-			$SG_CORE_CONTAINER_EXECUTABLE rm -f prometheus
-		fi
-
-		if [[ "$1" == "clean" ]]; then
-			$SG_CORE_CONTAINER_EXECUTABLE rmi $PROMETHEUS_CONTAINER_IMAGE
-		fi
-
 	fi
 	if [[ $NODE_EXPORTER_ENABLE = true ]]; then
 		if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
