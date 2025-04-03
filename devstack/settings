@@ -14,20 +14,3 @@ SG_CORE_WORKDIR=$SG_CORE_DIR/devstack/workdir
 SG_CORE_CONTAINER_REPOSITORY=${SG_CORE_CONTAINER_REPOSITORY:-quay.io/openstack-k8s-operators/sg-core}
 SG_CORE_CONTAINER_TAG=${SG_CORE_CONTAINER_TAG:-latest}
 SG_CORE_CONTAINER_IMAGE=$SG_CORE_CONTAINER_REPOSITORY:$SG_CORE_CONTAINER_TAG
-
-### prometheus ###
-PROMETHEUS_ENABLE=${PROMETHEUS_ENABLE:-true}
-
-PROMETHEUS_CLIENT_CONF_DIR=${PROMETHEUS_CLIENT_CONF_DIR:-/etc/openstack}
-PROMETHEUS_CONF_DIR=${PROMETHEUS_CONF_DIR:-/etc/prometheus}
-PROMETHEUS_CONFIG_FILE=$PROMETHEUS_CONF_DIR/prometheus.yml
-
-# It's assumed, that each service scrape target has its own same named
-# file in the scrape_configs folder
-# List of "," delimited names
-# Currently supported values are "sg-core" and "prometheus"
-PROMETHEUS_SERVICE_SCRAPE_TARGETS=${PROMETHEUS_SERVICE_SCRAPE_TARGETS:="sg-core"}
-
-# List of "," delimited targets. Each target is <ip>:<port>
-PROMETHEUS_CUSTOM_SCRAPE_TARGETS=${PROMETHEUS_CUSTOM_SCRAPE_TARGETS:-""}
-
