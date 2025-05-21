@@ -22,38 +22,15 @@ function install_sg-core {
 function configure_sg-core {
 	sudo mkdir -p `dirname $SG_CORE_CONF`
 	sudo cp $SG_CORE_DIR/devstack/sg-core-files/sg-core.conf.yaml $SG_CORE_CONF
+
+        # Copy prometheus.yaml file to /etc/openstack
+        sudo mkdir -p /etc/openstack
+        sudo cp $SG_CORE_DIR/devstack/observabilityclient-files/prometheus.yaml /etc/openstack/prometheus.yaml
 }
 
 function init_sg-core {
 	run_process "sg-core" "$SG_CORE_CONTAINER_EXECUTABLE run -v $SG_CORE_CONF:/etc/sg-core.conf.yaml --network host --name sg-core $SG_CORE_CONTAINER_IMAGE"
 }
-
-### prometheus ###
-function configure_prometheus {
-	BASE_CONFIG_FILE=$SG_CORE_DIR/devstack/prometheus-files/prometheus.yml
-	RESULT_CONFIG_FILE=$SG_CORE_WORKDIR/prometheus.yml
-
-	cat $BASE_CONFIG_FILE > $RESULT_CONFIG_FILE
-
-	SERVICES=$(echo $PROMETHEUS_SERVICE_SCRAPE_TARGETS | tr "," "\n")
-	for SERVICE in ${SERVICES[@]}
-	do
-		cat $SG_CORE_DIR/devstack/prometheus-files/scrape_configs/$SERVICE >> $RESULT_CONFIG_FILE
-	done
-
-	if [[ $PROMETHEUS_CUSTOM_SCRAPE_TARGETS != "" ]]; then
-		echo "  - job_name: 'custom'" >> $RESULT_CONFIG_FILE
-		echo "    static_configs:" >> $RESULT_CONFIG_FILE
-		echo "      - targets: [$PROMETHEUS_CUSTOM_SCRAPE_TARGETS]" >> $RESULT_CONFIG_FILE
-	fi
-
-	sudo mkdir -p `dirname $PROMETHEUS_CONFIG_FILE`
-	sudo cp $RESULT_CONFIG_FILE $PROMETHEUS_CONFIG_FILE
-
-	sudo mkdir -p $PROMETHEUS_CLIENT_CONF_DIR
-	sudo cp $SG_CORE_DIR/devstack/observabilityclient-files/prometheus.yaml $PROMETHEUS_CLIENT_CONF_DIR/prometheus.yaml
-}
-
 
 # check for service enabled
 if is_service_enabled sg-core; then
@@ -88,13 +65,6 @@ if is_service_enabled sg-core; then
 
 		if [[ "$1" == "clean" ]]; then
 			$SG_CORE_CONTAINER_EXECUTABLE rmi $SG_CORE_CONTAINER_IMAGE
-		fi
-	fi
-	if [[ $PROMETHEUS_ENABLE = true ]]; then
-		if [[ "$1" == "stack" && "$2" == "pre-install" ]]; then
-			# Create configuration file for Prometheus deployed by devstack-plugin-prometheus
-			echo_summary "Creating Prometheus configuration file for sg-core scraping"
-			configure_prometheus
 		fi
 	fi
 	rm -rf $SG_CORE_WORKDIR

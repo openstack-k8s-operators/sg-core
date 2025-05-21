@@ -1,4 +1,0 @@
-  - job_name: 'sg-core'
-
-    static_configs:
-      - targets: ['localhost:3000']
