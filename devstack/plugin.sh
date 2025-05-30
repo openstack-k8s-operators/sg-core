@@ -17,6 +17,12 @@ function install_container_executable {
 ### sg-core ###
 function install_sg-core {
 	$SG_CORE_CONTAINER_EXECUTABLE pull $SG_CORE_CONTAINER_IMAGE
+        if use_library_from_git "python-observabilityclient"; then
+            git_clone_by_name "python-observabilityclient"
+            setup_dev_lib "python-observabilityclient"
+        else
+            pip_install_gr python-observabilityclient
+        fi
 }
 
 function configure_sg-core {
@@ -24,8 +30,10 @@ function configure_sg-core {
 	sudo cp $SG_CORE_DIR/devstack/sg-core-files/sg-core.conf.yaml $SG_CORE_CONF
 
         # Copy prometheus.yaml file to /etc/openstack
-        sudo mkdir -p /etc/openstack
-        sudo cp $SG_CORE_DIR/devstack/observabilityclient-files/prometheus.yaml /etc/openstack/prometheus.yaml
+        if [[ $SG_CORE_CONFIGURE_OBSERVABILITYCLIENT = true ]]; then
+            sudo mkdir -p /etc/openstack
+            sudo cp $SG_CORE_DIR/devstack/observabilityclient-files/prometheus.yaml /etc/openstack/prometheus.yaml
+        fi
 }
 
 function init_sg-core {
