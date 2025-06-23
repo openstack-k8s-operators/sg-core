@@ -17,12 +17,6 @@ function install_container_executable {
 ### sg-core ###
 function install_sg-core {
     $SG_CORE_CONTAINER_EXECUTABLE pull $SG_CORE_CONTAINER_IMAGE
-    if use_library_from_git "python-observabilityclient"; then
-        git_clone_by_name "python-observabilityclient"
-        setup_dev_lib "python-observabilityclient"
-    else
-        pip_install_gr python-observabilityclient
-    fi
 }
 
 function configure_sg-core {
