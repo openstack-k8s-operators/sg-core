@@ -14,3 +14,7 @@ SG_CORE_WORKDIR=$SG_CORE_DIR/devstack/workdir
 SG_CORE_CONTAINER_REPOSITORY=${SG_CORE_CONTAINER_REPOSITORY:-quay.io/openstack-k8s-operators/sg-core}
 SG_CORE_CONTAINER_TAG=${SG_CORE_CONTAINER_TAG:-latest}
 SG_CORE_CONTAINER_IMAGE=$SG_CORE_CONTAINER_REPOSITORY:$SG_CORE_CONTAINER_TAG
+
+# If set to true, the plugin will create /etc/openstack/prometheus.yaml
+# with prometheus connection information to be used by the observabilityclient
+SG_CORE_CONFIGURE_OBSERVABILITYCLIENT=${SG_CORE_CONFIGURE_OBSERVABILITYCLIENT:-true}
