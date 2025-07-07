@@ -35,20 +35,23 @@ func (dam *DummyAM) Run(ctx context.Context, w transport.WriteFn, done chan bool
 	// print all received requests
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 
-		dam.logger.Debug("received HTTP request")
+		_ = dam.logger.Debug("received HTTP request")
 		out, err := os.OpenFile(dam.conf.Output, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 		if err != nil {
 			dam.logger.Metadata(logging.Metadata{"plugin": "dummy-alertmanager", "error": err})
-			dam.logger.Error("failed to open output file")
+			_ = dam.logger.Error("failed to open output file")
 		} else {
 			defer out.Close()
 		}
 		msg, err := io.ReadAll(req.Body)
 		if err != nil {
 			dam.logger.Metadata(logging.Metadata{"plugin": "dummy-alertmanager", "error": err})
-			dam.logger.Error("failed to read request")
+			_ = dam.logger.Error("failed to read request")
 		} else {
-			out.WriteString(fmt.Sprintf("%s\n", msg))
+			if _, err := out.WriteString(fmt.Sprintf("%s\n", msg)); err != nil {
+				dam.logger.Metadata(logging.Metadata{"plugin": "dummy-alertmanager", "error": err})
+				_ = dam.logger.Error("failed to write message to output file")
+			}
 		}
 
 	})
@@ -58,15 +61,15 @@ func (dam *DummyAM) Run(ctx context.Context, w transport.WriteFn, done chan bool
 		<-ctx.Done()
 		if err := srv.Shutdown(ctx); err != nil {
 			dam.logger.Metadata(logging.Metadata{"plugin": appname, "error": err})
-			dam.logger.Error("failed to shut down HTTP server")
+			_ = dam.logger.Error("failed to shut down HTTP server")
 		} else {
-			dam.logger.Info("shutting down HTTP server")
+			_ = dam.logger.Info("shutting down HTTP server")
 		}
 	}(srv, ctx)
 
 	err := srv.ListenAndServe()
 	dam.logger.Metadata(logging.Metadata{"plugin": appname, "error": err})
-	dam.logger.Info("exited")
+	_ = dam.logger.Info("exited")
 }
 
 // Listen ...

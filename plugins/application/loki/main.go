@@ -46,27 +46,27 @@ func (l *Loki) ReceiveEvent(log data.Event) {
 		lokiLog, err := lib.CreateLokiLog(log)
 		if err != nil {
 			l.logger.Metadata(logging.Metadata{"plugin": "loki", "log": log, "error": err})
-			l.logger.Error("failed to parse the data in event bus - disregarding")
+			_ = l.logger.Error("failed to parse the data in event bus - disregarding")
 			return
 		}
 		l.logChannel <- lokiLog
 	default:
 		l.logger.Metadata(logging.Metadata{"plugin": "loki", "event": log})
-		l.logger.Error("received event data (instead of log data) in event bus - disregarding")
+		_ = l.logger.Error("received event data (instead of log data) in event bus - disregarding")
 	}
 }
 
 // Run run loki application plugin
 func (l *Loki) Run(ctx context.Context, done chan bool) {
 	l.logger.Metadata(logging.Metadata{"plugin": "loki", "url": l.config.Connection})
-	l.logger.Info("storing logs to Loki.")
+	_ = l.logger.Info("storing logs to Loki.")
 	l.client.Start(nil, l.logChannel)
 
 	<-ctx.Done()
 	l.client.Disconnect()
 
 	l.logger.Metadata(logging.Metadata{"plugin": "loki"})
-	l.logger.Info("exited")
+	_ = l.logger.Info("exited")
 }
 
 // Config implements application.Application

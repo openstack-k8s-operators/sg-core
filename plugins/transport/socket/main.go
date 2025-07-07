@@ -53,22 +53,22 @@ type logWrapper struct {
 
 func (lw *logWrapper) Errorf(err error, format string, a ...interface{}) {
 	lw.l.Metadata(logging.Metadata{"plugin": "socket", "error": err})
-	lw.l.Error(fmt.Sprintf(format, a...))
+	_ = lw.l.Error(fmt.Sprintf(format, a...))
 }
 
 func (lw *logWrapper) Infof(format string, a ...interface{}) {
 	lw.l.Metadata(logging.Metadata{"plugin": "socket"})
-	lw.l.Info(fmt.Sprintf(format, a...))
+	_ = lw.l.Info(fmt.Sprintf(format, a...))
 }
 
 func (lw *logWrapper) Debugf(format string, a ...interface{}) {
 	lw.l.Metadata(logging.Metadata{"plugin": "socket"})
-	lw.l.Debug(fmt.Sprintf(format, a...))
+	_ = lw.l.Debug(fmt.Sprintf(format, a...))
 }
 
 func (lw *logWrapper) Warnf(format string, a ...interface{}) {
 	lw.l.Metadata(logging.Metadata{"plugin": "socket"})
-	lw.l.Warn(fmt.Sprintf(format, a...))
+	_ = lw.l.Warn(fmt.Sprintf(format, a...))
 }
 
 // Socket basic struct

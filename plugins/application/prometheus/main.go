@@ -80,22 +80,22 @@ type logWrapper struct {
 
 func (lw *logWrapper) Error(msg string, err error) {
 	lw.l.Metadata(logging.Metadata{"plugin": lw.plugin, "error": err})
-	lw.l.Error(msg)
+	_ = lw.l.Error(msg)
 }
 
 func (lw *logWrapper) Warn(msg string) {
 	lw.l.Metadata(logging.Metadata{"plugin": lw.plugin})
-	lw.l.Warn(msg)
+	_ = lw.l.Warn(msg)
 }
 
 func (lw *logWrapper) Infof(format string, a ...interface{}) {
 	lw.l.Metadata(logging.Metadata{"plugin": lw.plugin})
-	lw.l.Info(fmt.Sprintf(format, a...))
+	_ = lw.l.Info(fmt.Sprintf(format, a...))
 }
 
 func (lw *logWrapper) Debugf(format string, a ...interface{}) {
 	lw.l.Metadata(logging.Metadata{"plugin": lw.plugin})
-	lw.l.Debug(fmt.Sprintf(format, a...))
+	_ = lw.l.Debug(fmt.Sprintf(format, a...))
 }
 
 // container object for all metric related processes

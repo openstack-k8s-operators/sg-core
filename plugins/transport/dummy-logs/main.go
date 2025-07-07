@@ -31,7 +31,7 @@ func (dl *DummyLogs) Run(ctx context.Context, wrFn transport.WriteFn, done chan 
 			timestamp, err := t.MarshalText()
 			if err != nil {
 				dl.logger.Metadata(logging.Metadata{"plugin": "dummy-logs"})
-				dl.logger.Warn("Failed to get current timestamp")
+				_ = dl.logger.Warn("Failed to get current timestamp")
 				continue
 			}
 			log := "{\"@timestamp\":\"" + string(timestamp) + logEnding

@@ -56,7 +56,7 @@ func sendMessage(msg interface{}, w transport.WriteFn, logger *logging.Logger) {
 		msgCount++
 	} else {
 		logger.Metadata(logging.Metadata{"plugin": appname, "type": fmt.Sprintf("%T", msg)})
-		logger.Error("unknown type of received message")
+		_ = logger.Error("unknown type of received message")
 	}
 }
 
@@ -67,7 +67,7 @@ func (at *AMQP1) Run(ctx context.Context, w transport.WriteFn, done chan bool) {
 	at.conn, err = amqp.Dial(at.conf.URI)
 	if err != nil {
 		at.logger.Metadata(logging.Metadata{"plugin": appname, "error": err})
-		at.logger.Error("failed to connect")
+		_ = at.logger.Error("failed to connect")
 		return
 	}
 	defer at.conn.Close()
@@ -76,7 +76,7 @@ func (at *AMQP1) Run(ctx context.Context, w transport.WriteFn, done chan bool) {
 	at.sess, err = at.conn.NewSession()
 	if err != nil {
 		at.logger.Metadata(logging.Metadata{"plugin": appname, "error": err})
-		at.logger.Error("failed to create session")
+		_ = at.logger.Error("failed to create session")
 		return
 	}
 
@@ -87,7 +87,7 @@ func (at *AMQP1) Run(ctx context.Context, w transport.WriteFn, done chan bool) {
 	)
 	if err != nil {
 		at.logger.Metadata(logging.Metadata{"plugin": appname, "error": err})
-		at.logger.Error("failed to create receiver")
+		_ = at.logger.Error("failed to create receiver")
 		return
 	}
 	defer func(rcv *amqp.Receiver) {
@@ -100,10 +100,10 @@ func (at *AMQP1) Run(ctx context.Context, w transport.WriteFn, done chan bool) {
 		"plugin":     appname,
 		"connection": fmt.Sprintf("%s/%s", at.conf.URI, at.receiver.Address()),
 	})
-	at.logger.Info("listening")
+	_ = at.logger.Info("listening")
 
 	for {
-		at.logger.Debug(fmt.Sprintf("receiving %d msg/s", rate()))
+		_ = at.logger.Debug(fmt.Sprintf("receiving %d msg/s", rate()))
 		err := at.receiver.HandleMessage(ctx, func(msg *amqp.Message) error {
 			// accept message
 			if errr := msg.Accept(context.Background()); err != nil {
@@ -131,27 +131,27 @@ func (at *AMQP1) Run(ctx context.Context, w transport.WriteFn, done chan bool) {
 				sendMessage(val, w, at.logger)
 			default:
 				at.logger.Metadata(logging.Metadata{"plugin": appname, "type": val})
-				at.logger.Warn("unknown message format - skipping")
+				_ = at.logger.Warn("unknown message format - skipping")
 			}
 			return nil
 		})
 
 		if err != nil && !strings.Contains(err.Error(), "context canceled") {
 			at.logger.Metadata(logging.Metadata{"plugin": appname, "error": err})
-			at.logger.Error("failed to handle message")
+			_ = at.logger.Error("failed to handle message")
 			break
 		}
 	}
 
 	at.dumpFile.Close()
 	at.logger.Metadata(logging.Metadata{"plugin": appname})
-	at.logger.Info("exited")
+	_ = at.logger.Info("exited")
 }
 
 // Listen ...
 func (at *AMQP1) Listen(e data.Event) {
 	at.logger.Metadata(logging.Metadata{"plugin": appname, "event": e})
-	at.logger.Debug("received event")
+	_ = at.logger.Debug("received event")
 }
 
 // Config load configurations

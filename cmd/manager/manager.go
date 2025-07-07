@@ -169,7 +169,7 @@ func SetTransportHandlers(name string, handlerBlocks []struct {
 		handlers[name] = append(handlers[name], h)
 
 		logger.Metadata(logging.Metadata{"transport pair": name, "handler": block.Name})
-		logger.Info("initialized handler")
+		_ = logger.Info("initialized handler")
 	}
 	return nil
 }
@@ -193,7 +193,7 @@ func RunTransports(ctx context.Context, wg *sync.WaitGroup, done chan bool, repo
 					err := h.Handle(blob, report, metricPublishFunc, eventPublishFunc)
 					if err != nil {
 						logger.Metadata(logging.Metadata{"error": err, "handler": fmt.Sprintf("%s[%s]", h.Identify(), name)})
-						logger.Debug("failed handling message")
+						_ = logger.Debug("failed handling message")
 					}
 				}
 			}, done)
