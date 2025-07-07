@@ -32,7 +32,7 @@ type Loki struct {
 }
 
 // New constructor
-func New(logger *logging.Logger, sendEvent bus.EventPublishFunc) application.Application {
+func New(logger *logging.Logger, _ bus.EventPublishFunc) application.Application {
 	return &Loki{
 		logger:     logger,
 		logChannel: make(chan interface{}, 100),
@@ -57,7 +57,7 @@ func (l *Loki) ReceiveEvent(log data.Event) {
 }
 
 // Run run loki application plugin
-func (l *Loki) Run(ctx context.Context, done chan bool) {
+func (l *Loki) Run(ctx context.Context, _ chan bool) {
 	l.logger.Metadata(logging.Metadata{"plugin": "loki", "url": l.config.Connection})
 	_ = l.logger.Info("storing logs to Loki.")
 	l.client.Start(nil, l.logChannel)

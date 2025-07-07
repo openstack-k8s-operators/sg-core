@@ -61,7 +61,7 @@ func sendMessage(msg interface{}, w transport.WriteFn, logger *logging.Logger) {
 }
 
 // Run implements type Transport
-func (at *AMQP1) Run(ctx context.Context, w transport.WriteFn, done chan bool) {
+func (at *AMQP1) Run(ctx context.Context, w transport.WriteFn, _ chan bool) {
 	var err error
 	// connect
 	at.conn, err = amqp.Dial(at.conf.URI)

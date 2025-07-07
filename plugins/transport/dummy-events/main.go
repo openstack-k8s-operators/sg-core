@@ -72,7 +72,7 @@ type DummyEvents struct {
 }
 
 // Run implements type Transport
-func (de *DummyEvents) Run(ctx context.Context, wrFn transport.WriteFn, done chan bool) {
+func (de *DummyEvents) Run(ctx context.Context, wrFn transport.WriteFn, _ chan bool) {
 
 	for {
 
@@ -96,7 +96,7 @@ done:
 }
 
 // Listen ...
-func (de *DummyEvents) Listen(e data.Event) {
+func (de *DummyEvents) Listen(_ data.Event) {
 
 }
 
@@ -115,6 +115,6 @@ func (de *DummyEvents) Config(c []byte) error {
 }
 
 // New create new socket transport
-func New(l *logging.Logger) transport.Transport {
+func New(_ *logging.Logger) transport.Transport {
 	return &DummyEvents{}
 }

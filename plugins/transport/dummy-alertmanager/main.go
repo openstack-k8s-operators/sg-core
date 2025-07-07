@@ -31,7 +31,7 @@ type DummyAM struct {
 }
 
 // Run implements type Transport
-func (dam *DummyAM) Run(ctx context.Context, w transport.WriteFn, done chan bool) {
+func (dam *DummyAM) Run(ctx context.Context, _ transport.WriteFn, _ chan bool) {
 	// print all received requests
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 
@@ -73,7 +73,7 @@ func (dam *DummyAM) Run(ctx context.Context, w transport.WriteFn, done chan bool
 }
 
 // Listen ...
-func (dam *DummyAM) Listen(e data.Event) {
+func (dam *DummyAM) Listen(_ data.Event) {
 }
 
 // Config load configurations

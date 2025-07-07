@@ -42,7 +42,7 @@ type ceilometerConfig struct {
 	Source string `yaml:"source"`
 }
 
-func (c *ceilometerMetricHandler) Run(ctx context.Context, mpf bus.MetricPublishFunc, epf bus.EventPublishFunc) {
+func (c *ceilometerMetricHandler) Run(ctx context.Context, mpf bus.MetricPublishFunc, _ bus.EventPublishFunc) {
 	for {
 		select {
 		case <-ctx.Done():

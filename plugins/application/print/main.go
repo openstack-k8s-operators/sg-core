@@ -39,7 +39,7 @@ type Print struct {
 }
 
 // New constructor
-func New(logger *logging.Logger, sendEvent bus.EventPublishFunc) application.Application {
+func New(logger *logging.Logger, _ bus.EventPublishFunc) application.Application {
 	return &Print{
 		configuration: configT{
 			MetricOutput: "/dev/stdout",
@@ -71,7 +71,7 @@ func (p *Print) ReceiveMetric(name string, t float64, mType data.MetricType, int
 }
 
 // Run run scrape endpoint
-func (p *Print) Run(ctx context.Context, done chan bool) {
+func (p *Print) Run(ctx context.Context, _ chan bool) {
 
 	metrF, err := os.OpenFile(p.configuration.MetricOutput, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {

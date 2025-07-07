@@ -26,7 +26,7 @@ type collectdMetricsHandler struct {
 	totalDecodeErrors     uint64
 }
 
-func (c *collectdMetricsHandler) Run(ctx context.Context, mpf bus.MetricPublishFunc, epf bus.EventPublishFunc) {
+func (c *collectdMetricsHandler) Run(ctx context.Context, mpf bus.MetricPublishFunc, _ bus.EventPublishFunc) {
 	for {
 		select {
 		case <-ctx.Done():
@@ -150,7 +150,7 @@ func (c *collectdMetricsHandler) writeMetrics(cdmetric collectd.Metric, pf bus.M
 	return nil
 }
 
-func (c *collectdMetricsHandler) Config(blob []byte) error {
+func (c *collectdMetricsHandler) Config(_ []byte) error {
 	return nil
 }
 

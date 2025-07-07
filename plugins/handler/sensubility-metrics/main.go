@@ -31,7 +31,7 @@ type sensubilityMetrics struct {
 	configuration         *configT
 }
 
-func (sm *sensubilityMetrics) Run(ctx context.Context, mpf bus.MetricPublishFunc, epf bus.EventPublishFunc) {
+func (sm *sensubilityMetrics) Run(ctx context.Context, mpf bus.MetricPublishFunc, _ bus.EventPublishFunc) {
 	for {
 		select {
 		case <-ctx.Done():

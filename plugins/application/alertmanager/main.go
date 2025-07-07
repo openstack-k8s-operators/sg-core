@@ -29,7 +29,7 @@ type AlertManager struct {
 }
 
 // New constructor
-func New(logger *logging.Logger, sendEvent bus.EventPublishFunc) application.Application {
+func New(logger *logging.Logger, _ bus.EventPublishFunc) application.Application {
 	return &AlertManager{
 		configuration: lib.AppConfig{
 			AlertManagerURL: "http://localhost",
@@ -58,7 +58,7 @@ func (am *AlertManager) ReceiveEvent(event data.Event) {
 }
 
 // Run implements main process of the application
-func (am *AlertManager) Run(ctx context.Context, done chan bool) {
+func (am *AlertManager) Run(ctx context.Context, _ chan bool) {
 	wg := sync.WaitGroup{}
 
 	for {

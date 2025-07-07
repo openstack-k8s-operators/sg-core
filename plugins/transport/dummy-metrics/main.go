@@ -89,7 +89,7 @@ type DummyMetrics struct {
 }
 
 // Run implements type Transport
-func (dm *DummyMetrics) Run(ctx context.Context, w transport.WriteFn, done chan bool) {
+func (dm *DummyMetrics) Run(ctx context.Context, w transport.WriteFn, _ chan bool) {
 
 	for {
 		select {
@@ -110,7 +110,7 @@ done:
 }
 
 // Listen ...
-func (dm *DummyMetrics) Listen(e data.Event) {
+func (dm *DummyMetrics) Listen(_ data.Event) {
 
 }
 
@@ -129,6 +129,6 @@ func (dm *DummyMetrics) Config(c []byte) error {
 }
 
 // New create new socket transport
-func New(l *logging.Logger) transport.Transport {
+func New(_ *logging.Logger) transport.Transport {
 	return &DummyMetrics{}
 }

@@ -63,7 +63,7 @@ type collectorExpiry struct {
 	delete    func() bool
 }
 
-func (ce *collectorExpiry) Expired(interval time.Duration) bool {
+func (ce *collectorExpiry) Expired(_ time.Duration) bool {
 	return (syncMapLen(&ce.collector.mProc) == 0)
 }
 
@@ -234,7 +234,7 @@ type Prometheus struct {
 }
 
 // New constructor
-func New(l *logging.Logger, sendEvent bus.EventPublishFunc) application.Application {
+func New(l *logging.Logger, _ bus.EventPublishFunc) application.Application {
 	return &Prometheus{
 		configuration: configT{
 			Host:               "127.0.0.1",
