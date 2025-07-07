@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -101,7 +102,10 @@ func (sm *sensubilityMetrics) Handle(blob []byte, reportErrors bool, mpf bus.Met
 		if reportErrors {
 			sm.publishErrEvent(err, epf)
 		}
-		sm.totalDecodeErrors += int64(len(err.(*sensu.ErrMissingFields).Fields))
+		var missingFieldsErr *sensu.ErrMissingFields
+		if errors.As(err, &missingFieldsErr) {
+			sm.totalDecodeErrors += int64(len(missingFieldsErr.Fields))
+		}
 		return err
 	}
 

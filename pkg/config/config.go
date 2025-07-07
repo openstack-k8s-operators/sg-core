@@ -2,11 +2,12 @@ package config
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
 
-	"github.com/pkg/errors"
+	pkgErrors "github.com/pkg/errors"
 	"gopkg.in/go-playground/validator.v9"
 	"gopkg.in/yaml.v2"
 )
@@ -20,26 +21,27 @@ var (
 func ParseConfig(r io.Reader, config interface{}) error {
 	configBytes, err := io.ReadAll(r)
 	if err != nil {
-		return errors.Wrap(err, "while reading configuration")
+		return pkgErrors.Wrap(err, "while reading configuration")
 	}
 	if string(configBytes) == "null\n" {
 		return nil
 	}
 	err = yaml.Unmarshal(configBytes, config)
 	if err != nil {
-		return errors.Wrap(err, "unmarshalling config yaml")
+		return pkgErrors.Wrap(err, "unmarshalling config yaml")
 	}
 
 	err = Validate.Struct(config)
 	if err != nil {
-		if e, ok := err.(validator.ValidationErrors); ok {
+		var e validator.ValidationErrors
+		if errors.As(err, &e) {
 			missingFields := []string{}
 			for _, fe := range e {
 				missingFields = append(missingFields, setCamelCase(fe.Namespace()))
 			}
 			return fmt.Errorf("missing or incorrect configuration fields --  %s --", strings.Join(missingFields, " , "))
 		}
-		return errors.Wrap(err, "error while validating configuration")
+		return pkgErrors.Wrap(err, "error while validating configuration")
 	}
 	return nil
 }
