@@ -364,10 +364,10 @@ func (p *Prometheus) Config(c []byte) error {
 // helper functions
 
 func syncMapLen(m *sync.Map) int {
-	len := 0
+	count := 0
 	m.Range(func(k interface{}, v interface{}) bool {
-		len++
+		count++
 		return true
 	})
-	return len
+	return count
 }
