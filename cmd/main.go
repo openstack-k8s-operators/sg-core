@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -93,7 +94,7 @@ func main() {
 	for _, aConfig := range configuration.Applications {
 		err = manager.InitApplication(aConfig.Name, aConfig.Config)
 		if err != nil {
-			if err == manager.ErrAppNotReceiver {
+			if errors.Is(err, manager.ErrAppNotReceiver) {
 				logger.Metadata(logging.Metadata{"application": aConfig.Name})
 				_ = logger.Warn(err.Error())
 			} else {
