@@ -63,7 +63,7 @@ type collectorExpiry struct {
 	delete    func() bool
 }
 
-func (ce *collectorExpiry) Expired(interval time.Duration) bool {
+func (ce *collectorExpiry) Expired(_ time.Duration) bool {
 	return (syncMapLen(&ce.collector.mProc) == 0)
 }
 
@@ -80,22 +80,22 @@ type logWrapper struct {
 
 func (lw *logWrapper) Error(msg string, err error) {
 	lw.l.Metadata(logging.Metadata{"plugin": lw.plugin, "error": err})
-	lw.l.Error(msg)
+	_ = lw.l.Error(msg)
 }
 
 func (lw *logWrapper) Warn(msg string) {
 	lw.l.Metadata(logging.Metadata{"plugin": lw.plugin})
-	lw.l.Warn(msg)
+	_ = lw.l.Warn(msg)
 }
 
 func (lw *logWrapper) Infof(format string, a ...interface{}) {
 	lw.l.Metadata(logging.Metadata{"plugin": lw.plugin})
-	lw.l.Info(fmt.Sprintf(format, a...))
+	_ = lw.l.Info(fmt.Sprintf(format, a...))
 }
 
 func (lw *logWrapper) Debugf(format string, a ...interface{}) {
 	lw.l.Metadata(logging.Metadata{"plugin": lw.plugin})
-	lw.l.Debug(fmt.Sprintf(format, a...))
+	_ = lw.l.Debug(fmt.Sprintf(format, a...))
 }
 
 // container object for all metric related processes
@@ -234,7 +234,7 @@ type Prometheus struct {
 }
 
 // New constructor
-func New(l *logging.Logger, sendEvent bus.EventPublishFunc) application.Application {
+func New(l *logging.Logger, _ bus.EventPublishFunc) application.Application {
 	return &Prometheus{
 		configuration: configT{
 			Host:               "127.0.0.1",
@@ -364,10 +364,10 @@ func (p *Prometheus) Config(c []byte) error {
 // helper functions
 
 func syncMapLen(m *sync.Map) int {
-	len := 0
+	count := 0
 	m.Range(func(k interface{}, v interface{}) bool {
-		len++
+		count++
 		return true
 	})
-	return len
+	return count
 }

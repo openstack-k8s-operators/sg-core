@@ -39,7 +39,7 @@ type Print struct {
 }
 
 // New constructor
-func New(logger *logging.Logger, sendEvent bus.EventPublishFunc) application.Application {
+func New(logger *logging.Logger, _ bus.EventPublishFunc) application.Application {
 	return &Print{
 		configuration: configT{
 			MetricOutput: "/dev/stdout",
@@ -71,27 +71,27 @@ func (p *Print) ReceiveMetric(name string, t float64, mType data.MetricType, int
 }
 
 // Run run scrape endpoint
-func (p *Print) Run(ctx context.Context, done chan bool) {
+func (p *Print) Run(ctx context.Context, _ chan bool) {
 
 	metrF, err := os.OpenFile(p.configuration.MetricOutput, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		p.logger.Metadata(logging.Metadata{"plugin": "print", "error": err})
-		p.logger.Error("failed to open metrics data output file")
+		_ = p.logger.Error("failed to open metrics data output file")
 	} else {
 		defer metrF.Close()
 	}
 
 	evtsF, errr := os.OpenFile(p.configuration.EventsOutput, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		p.logger.Metadata(logging.Metadata{"plugin": "print", "error": err})
-		p.logger.Error("failed to open events data output file")
+	if errr != nil {
+		p.logger.Metadata(logging.Metadata{"plugin": "print", "error": errr})
+		_ = p.logger.Error("failed to open events data output file")
 	} else {
 		defer evtsF.Close()
 	}
 
 	if err == nil && errr == nil {
 		p.logger.Metadata(logging.Metadata{"plugin": "print", "events": p.configuration.EventsOutput, "metrics": p.configuration.MetricOutput})
-		p.logger.Info("writing processed data to files.")
+		_ = p.logger.Info("writing processed data to files.")
 
 		for {
 			select {
@@ -110,22 +110,28 @@ func (p *Print) Run(ctx context.Context, done chan bool) {
 				encoded, err := json.MarshalIndent(eo, "", "  ")
 				if err != nil {
 					p.logger.Metadata(logging.Metadata{"plugin": "print", "data": event})
-					p.logger.Warn("failed to marshal event data")
+					_ = p.logger.Warn("failed to marshal event data")
 				}
-				evtsF.WriteString(fmt.Sprintf("Processed event:\n%s\n", string(encoded)))
+				if _, err := evtsF.WriteString(fmt.Sprintf("Processed event:\n%s\n", string(encoded))); err != nil {
+					p.logger.Metadata(logging.Metadata{"plugin": "print", "error": err})
+					_ = p.logger.Error("failed to write event data to file")
+				}
 			case metrics := <-p.mChan:
 				encoded, err := json.MarshalIndent(metrics, "", "  ")
 				if err != nil {
 					p.logger.Metadata(logging.Metadata{"plugin": "print", "data": metrics})
-					p.logger.Warn("failed to marshal metric data")
+					_ = p.logger.Warn("failed to marshal metric data")
 				}
-				metrF.WriteString(fmt.Sprintf("Processed metric:\n%s\n", string(encoded)))
+				if _, err := metrF.WriteString(fmt.Sprintf("Processed metric:\n%s\n", string(encoded))); err != nil {
+					p.logger.Metadata(logging.Metadata{"plugin": "print", "error": err})
+					_ = p.logger.Error("failed to write metric data to file")
+				}
 			}
 		}
 	}
 done:
 	p.logger.Metadata(logging.Metadata{"plugin": "print"})
-	p.logger.Info("exited")
+	_ = p.logger.Info("exited")
 }
 
 // Config implements application.Application

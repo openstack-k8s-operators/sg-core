@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"os"
@@ -38,12 +39,12 @@ func main() {
 		f, err := os.Create(*cpuprofile)
 		if err != nil {
 			logger.Metadata(logging.Metadata{"error": err})
-			logger.Error("failed to start cpu profile")
+			_ = logger.Error("failed to start cpu profile")
 		}
 		err = pprof.StartCPUProfile(f)
 		if err != nil {
 			logger.Metadata(logging.Metadata{"error": err})
-			logger.Error("failed to start cpu profile")
+			_ = logger.Error("failed to start cpu profile")
 		}
 		defer pprof.StopCPUProfile()
 	}
@@ -51,14 +52,14 @@ func main() {
 	file, err := os.Open(*configPath)
 	if err != nil {
 		logger.Metadata(logging.Metadata{"error": err})
-		logger.Error("failed opening configuration file")
+		_ = logger.Error("failed opening configuration file")
 		return
 	}
 
 	err = config.ParseConfig(file, &configuration)
 	if err != nil {
 		logger.Metadata(logging.Metadata{"error": err})
-		logger.Error("failed parsing config file")
+		_ = logger.Error("failed parsing config file")
 		return
 	}
 
@@ -77,33 +78,33 @@ func main() {
 		tName, err := manager.InitTransport(tConfig.Name, tConfig.Config)
 		if err != nil {
 			logger.Metadata(logging.Metadata{"transport": tConfig.Name, "error": err})
-			logger.Error("failed configuring transport")
+			_ = logger.Error("failed configuring transport")
 			continue
 		}
 		err = manager.SetTransportHandlers(tName, tConfig.Handlers)
 		if err != nil {
 			logger.Metadata(logging.Metadata{"transport": tName, "error": err})
-			logger.Error("transport handlers failed to load")
+			_ = logger.Error("transport handlers failed to load")
 			continue
 		}
 		logger.Metadata(logging.Metadata{"transport": tName})
-		logger.Info("loaded transport")
+		_ = logger.Info("loaded transport")
 	}
 
 	for _, aConfig := range configuration.Applications {
 		err = manager.InitApplication(aConfig.Name, aConfig.Config)
 		if err != nil {
-			if err == manager.ErrAppNotReceiver {
+			if errors.Is(err, manager.ErrAppNotReceiver) {
 				logger.Metadata(logging.Metadata{"application": aConfig.Name})
-				logger.Warn(err.Error())
+				_ = logger.Warn(err.Error())
 			} else {
 				logger.Metadata(logging.Metadata{"application": aConfig.Name, "error": err})
-				logger.Error("failed configuring application")
+				_ = logger.Error("failed configuring application")
 				continue
 			}
 		}
 		logger.Metadata(logging.Metadata{"application": aConfig.Name})
-		logger.Info("loaded application plugin")
+		_ = logger.Info("loaded application plugin")
 	}
 
 	// NOTE(mmagr): so if err will be just the warning from above, do we still need to end execution?
@@ -133,5 +134,5 @@ func main() {
 done:
 	cancelCtx()
 	wg.Wait()
-	logger.Info("sg-core exited cleanly")
+	_ = logger.Info("sg-core exited cleanly")
 }

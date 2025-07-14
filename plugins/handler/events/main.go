@@ -21,7 +21,7 @@ type EventsHandler struct {
 }
 
 // Handle implements the data.EventsHandler interface
-func (eh *EventsHandler) Handle(msg []byte, reportErrors bool, sendMetric bus.MetricPublishFunc, sendEvent bus.EventPublishFunc) error {
+func (eh *EventsHandler) Handle(msg []byte, reportErrors bool, _ bus.MetricPublishFunc, sendEvent bus.EventPublishFunc) error {
 	source := lib.DataSource(0)
 	if eh.configuration.StrictSource != "" {
 		source.SetFromString(eh.configuration.StrictSource)
@@ -59,7 +59,7 @@ func (eh *EventsHandler) Handle(msg []byte, reportErrors bool, sendMetric bus.Me
 }
 
 // Run send internal metrics to bus
-func (eh *EventsHandler) Run(ctx context.Context, sendMetric bus.MetricPublishFunc, sendEvent bus.EventPublishFunc) {
+func (eh *EventsHandler) Run(ctx context.Context, sendMetric bus.MetricPublishFunc, _ bus.EventPublishFunc) {
 	for {
 		select {
 		case <-ctx.Done():

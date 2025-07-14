@@ -1,65 +1,11 @@
-issues:
-  exclude-rules:
-    - linters:
-      - errcheck
-      text: "[a-zA-Z]+.[a-zA-Z]+.(Error|Info|Debug|Warn)" # from logger
-    - text: "[A-Z]+" #omit enums
-      linters:
-        - deadcode
-    - text: New
-      linters:
-        - deadcode
-    - linters:
-        - staticcheck
-      # https://staticcheck.io/docs/checks#SA4008 (The variable in the loop condition never changes, are you incrementing the wrong variable?)
-      text: "SA4008:"
-    # Don't warn on unused parameters.
-    # Parameter names are useful; replacing them with '_' is undesirable.
-    - linters: [revive]
-      text: 'unused-parameter: parameter \S+ seems to be unused, consider removing or renaming it as _'
-    - linters: [revive]
-      text: 'redefines-builtin-id: redefinition of the built-in function new'
-    - linters: [revive]
-      text: 'redefines-builtin-id: redefinition of the built-in function len'
-  exclude-dirs:
-    - plugins/transport/dummy-alertmanager
-    - plugins/transport/dummy-events
-    - plugins/transport/dummy-metrics
-    - plugins/transport/dummy-logs
-    - plugins/application/print
-    - devenv
 linters:
-  disable-all: true
+  # Enable specific linter
+  # https://golangci-lint.run/usage/linters/#enabled-by-default
   enable:
-    - bodyclose
-    # - depguard
-    - dogsled
-    - dupl
-    - errcheck
-    # - exhaustive
-    - exportloopref
-    # - gochecknoinits
-    - goconst
-    - gocritic
-    - gocyclo
-    - gofmt
-    - goimports
-    - goprintffuncname
-    - gosec
-    - gosimple
-    - govet
-    - ineffassign
-    - misspell
-    - nakedret
-    - noctx
-    - nolintlint
+    - errorlint
     - revive
-    - staticcheck
-    - stylecheck
-    - typecheck
-    # - unused
-    - unconvert
-    # NOTE: not all application plugins use ability to emit internal events through
-    #       passed bus function in it's constructor.
-    #- unparam
-    # - whitespace
+    - ginkgolinter
+    - gofmt
+    - govet
+run:
+  timeout: 5m

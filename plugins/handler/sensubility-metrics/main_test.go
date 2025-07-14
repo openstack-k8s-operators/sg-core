@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"testing"
 	"time"
 
@@ -203,7 +204,8 @@ func TestSensuMetricHandling(t *testing.T) {
 				pubWrapper.MPFunc,
 				nilEPFunc,
 			)
-			eE, ok := err.(*sensu.ErrMissingFields)
+			var eE *sensu.ErrMissingFields
+			ok := errors.As(err, &eE)
 			assert.Equal(t, ok, true)
 			assert.Equal(t, eE.Fields, []string{
 				"startsAt",
@@ -292,7 +294,8 @@ func TestSensuMetricHandling(t *testing.T) {
 				pubWrapper.MPFunc,
 				nilEPFunc,
 			)
-			eE, ok := err.(*sensu.ErrMissingFields)
+			var eE *sensu.ErrMissingFields
+			ok := errors.As(err, &eE)
 			assert.Equal(t, ok, true)
 			assert.Equal(t, eE.Fields, []string{
 				"annotations.output[0].service",

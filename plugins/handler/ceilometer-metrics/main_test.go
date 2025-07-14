@@ -37,7 +37,7 @@ func ceilometerMetricTestTemplateFromJSON(jsonData jsoniter.RawMessage) (*Ceilom
 	var testData CeilometerMetricTestTemplate
 	err := json.Unmarshal(jsonData, &testData)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing json: %s", err)
+		return nil, fmt.Errorf("error parsing json: %w", err)
 	}
 	return &testData, nil
 }

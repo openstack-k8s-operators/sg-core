@@ -23,7 +23,7 @@ type DummyLogs struct {
 }
 
 // Run implements type Transport
-func (dl *DummyLogs) Run(ctx context.Context, wrFn transport.WriteFn, done chan bool) {
+func (dl *DummyLogs) Run(ctx context.Context, wrFn transport.WriteFn, _ chan bool) {
 
 	for {
 		for _, logEnding := range logMessages {
@@ -31,7 +31,7 @@ func (dl *DummyLogs) Run(ctx context.Context, wrFn transport.WriteFn, done chan 
 			timestamp, err := t.MarshalText()
 			if err != nil {
 				dl.logger.Metadata(logging.Metadata{"plugin": "dummy-logs"})
-				dl.logger.Warn("Failed to get current timestamp")
+				_ = dl.logger.Warn("Failed to get current timestamp")
 				continue
 			}
 			log := "{\"@timestamp\":\"" + string(timestamp) + logEnding
@@ -50,12 +50,12 @@ done:
 }
 
 // Listen ...
-func (dl *DummyLogs) Listen(e data.Event) {
+func (dl *DummyLogs) Listen(_ data.Event) {
 
 }
 
 // Config load configurations
-func (dl *DummyLogs) Config(c []byte) error {
+func (dl *DummyLogs) Config(_ []byte) error {
 	return nil
 }
 

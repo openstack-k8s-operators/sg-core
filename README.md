@@ -24,6 +24,13 @@ Prometheus.
 ./build.sh
 ```
 
+# Linting
+Code linting checks is performed using golangci-lint version 1.55.2, the same version used for operators in the openstack-k8s-operators project. You can run the linter using Docker:
+
+```bash
+docker run -t --rm -v $(pwd):/sg-core -w /sg-core golangci/golangci-lint:v1.55.2 golangci-lint run -v -c .golangci.yaml
+```
+
 # Configuration
 Administrators must specify 3 sections in the yaml config:
 

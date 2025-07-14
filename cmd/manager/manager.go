@@ -70,7 +70,7 @@ func InitTransport(name string, config interface{}) (string, error) {
 		return "", errors.Wrap(err, "failed initializing transport")
 	}
 
-	new, ok := n.(func(*logging.Logger) transport.Transport)
+	constructor, ok := n.(func(*logging.Logger) transport.Transport)
 	if !ok {
 		return "", fmt.Errorf("plugin %s constructor 'New' did not return type 'transport.Transport'", name)
 	}
@@ -78,7 +78,7 @@ func InitTransport(name string, config interface{}) (string, error) {
 	// Append the current length of transports
 	// to make each name unique
 	uniqueName := name + strconv.Itoa(len(transports))
-	transports[uniqueName] = new(logger)
+	transports[uniqueName] = constructor(logger)
 
 	c, err := yaml.Marshal(config)
 	if err != nil {
@@ -99,12 +99,12 @@ func InitApplication(name string, config interface{}) error {
 		return errors.Wrap(err, "failed initializing application plugin")
 	}
 
-	new, ok := n.(func(*logging.Logger, bus.EventPublishFunc) application.Application)
+	constructor, ok := n.(func(*logging.Logger, bus.EventPublishFunc) application.Application)
 	if !ok {
 		return fmt.Errorf("plugin %s constructor 'New' did not return type 'application.Application'", name)
 	}
 
-	app := new(logger, eventBus.Publish)
+	app := constructor(logger, eventBus.Publish)
 
 	c, err := yaml.Marshal(config)
 	if err != nil {
@@ -150,11 +150,11 @@ func SetTransportHandlers(name string, handlerBlocks []struct {
 			return errors.Wrap(err, "failed initializing handler")
 		}
 
-		new, ok := n.(func() handler.Handler)
+		constructor, ok := n.(func() handler.Handler)
 		if !ok {
 			return fmt.Errorf("handler %s constructor did not return type handler.Handler", block.Name)
 		}
-		h := new()
+		h := constructor()
 
 		configBlob, err := yaml.Marshal(block.Config)
 		if err != nil {
@@ -169,7 +169,7 @@ func SetTransportHandlers(name string, handlerBlocks []struct {
 		handlers[name] = append(handlers[name], h)
 
 		logger.Metadata(logging.Metadata{"transport pair": name, "handler": block.Name})
-		logger.Info("initialized handler")
+		_ = logger.Info("initialized handler")
 	}
 	return nil
 }
@@ -193,7 +193,7 @@ func RunTransports(ctx context.Context, wg *sync.WaitGroup, done chan bool, repo
 					err := h.Handle(blob, report, metricPublishFunc, eventPublishFunc)
 					if err != nil {
 						logger.Metadata(logging.Metadata{"error": err, "handler": fmt.Sprintf("%s[%s]", h.Identify(), name)})
-						logger.Debug("failed handling message")
+						_ = logger.Debug("failed handling message")
 					}
 				}
 			}, done)

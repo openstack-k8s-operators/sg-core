@@ -74,7 +74,7 @@ func (l *logHandler) parse(log []byte) (data.Event, error) {
 }
 
 // Handle implements the data.EventsHandler interface
-func (l *logHandler) Handle(msg []byte, reportErrors bool, mpf bus.MetricPublishFunc, epf bus.EventPublishFunc) error {
+func (l *logHandler) Handle(msg []byte, reportErrors bool, _ bus.MetricPublishFunc, epf bus.EventPublishFunc) error {
 	var err error
 	l.statsLock.Lock()
 	l.totalLogsReceived++
@@ -103,7 +103,7 @@ func (l *logHandler) Handle(msg []byte, reportErrors bool, mpf bus.MetricPublish
 }
 
 // Run send internal metrics to bus
-func (l *logHandler) Run(ctx context.Context, mpf bus.MetricPublishFunc, epf bus.EventPublishFunc) {
+func (l *logHandler) Run(ctx context.Context, mpf bus.MetricPublishFunc, _ bus.EventPublishFunc) {
 	for {
 		select {
 		case <-ctx.Done():

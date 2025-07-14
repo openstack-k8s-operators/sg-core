@@ -29,7 +29,7 @@ type AlertManager struct {
 }
 
 // New constructor
-func New(logger *logging.Logger, sendEvent bus.EventPublishFunc) application.Application {
+func New(logger *logging.Logger, _ bus.EventPublishFunc) application.Application {
 	return &AlertManager{
 		configuration: lib.AppConfig{
 			AlertManagerURL: "http://localhost",
@@ -58,7 +58,7 @@ func (am *AlertManager) ReceiveEvent(event data.Event) {
 }
 
 // Run implements main process of the application
-func (am *AlertManager) Run(ctx context.Context, done chan bool) {
+func (am *AlertManager) Run(ctx context.Context, _ chan bool) {
 	wg := sync.WaitGroup{}
 
 	for {
@@ -72,7 +72,7 @@ func (am *AlertManager) Run(ctx context.Context, done chan bool) {
 				alert, err := json.Marshal(dumped)
 				if err != nil {
 					am.logger.Metadata(logging.Metadata{"plugin": appname, "alert": dumped})
-					am.logger.Warn("failed to marshal alert - disregarding")
+					_ = am.logger.Warn("failed to marshal alert - disregarding")
 				} else {
 					buff := bytes.NewBufferString("[")
 					buff.Write(alert)
@@ -81,7 +81,7 @@ func (am *AlertManager) Run(ctx context.Context, done chan bool) {
 					req, err := http.NewRequest("POST", am.configuration.AlertManagerURL, buff)
 					if err != nil {
 						am.logger.Metadata(logging.Metadata{"plugin": appname, "error": err})
-						am.logger.Error("failed to create http request")
+						_ = am.logger.Error("failed to create http request")
 					}
 					req = req.WithContext(ctx)
 					req.Header.Set("X-Custom-Header", "smartgateway")
@@ -91,7 +91,7 @@ func (am *AlertManager) Run(ctx context.Context, done chan bool) {
 					resp, err := client.Do(req)
 					if err != nil {
 						am.logger.Metadata(logging.Metadata{"plugin": appname, "error": err, "alert": buff.String()})
-						am.logger.Error("failed to report alert to AlertManager")
+						_ = am.logger.Error("failed to report alert to AlertManager")
 					} else if resp.StatusCode != http.StatusOK {
 						// https://github.com/prometheus/alertmanager/blob/master/api/v2/openapi.yaml#L170
 						body, _ := io.ReadAll(resp.Body)
@@ -101,7 +101,7 @@ func (am *AlertManager) Run(ctx context.Context, done chan bool) {
 							"status": resp.Status,
 							"header": resp.Header,
 							"body":   string(body)})
-						am.logger.Error("failed to report alert to AlertManager")
+						_ = am.logger.Error("failed to report alert to AlertManager")
 					}
 				}
 			}(dumped, &wg)
@@ -111,7 +111,7 @@ func (am *AlertManager) Run(ctx context.Context, done chan bool) {
 done:
 	wg.Wait()
 	am.logger.Metadata(logging.Metadata{"plugin": appname})
-	am.logger.Info("exited")
+	_ = am.logger.Info("exited")
 }
 
 // Config implements application.Application

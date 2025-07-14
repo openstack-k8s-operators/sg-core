@@ -59,7 +59,7 @@ type Elasticsearch struct {
 }
 
 // New constructor
-func New(logger *logging.Logger, sendEvent bus.EventPublishFunc) application.Application {
+func New(logger *logging.Logger, _ bus.EventPublishFunc) application.Application {
 	return &Elasticsearch{
 		logger: logger,
 		buffer: make(map[string][]string),
@@ -81,12 +81,12 @@ func (es *Elasticsearch) ReceiveEvent(event data.Event) {
 		//     case data.ERROR: TODO: save internal error
 		//     case data.RESULT: TODO: save task result
 		es.logger.Metadata(logging.Metadata{"plugin": appname, "event": event})
-		es.logger.Debug("received unknown event")
+		_ = es.logger.Debug("received unknown event")
 		return
 	}
 	if err != nil {
 		es.logger.Metadata(logging.Metadata{"plugin": appname, "event": event})
-		es.logger.Error("failed formating record")
+		_ = es.logger.Error("failed formating record")
 		return
 	}
 
@@ -103,7 +103,7 @@ func (es *Elasticsearch) ReceiveEvent(event data.Event) {
 			es.bufferMutex.Unlock()
 			// buffer is not full, don't send
 			es.logger.Metadata(logging.Metadata{"plugin": appname, "record": record})
-			es.logger.Debug("buffering record")
+			_ = es.logger.Debug("buffering record")
 			return
 		}
 		recordList = es.buffer[event.Index]
@@ -119,18 +119,18 @@ func (es *Elasticsearch) ReceiveEvent(event data.Event) {
 // Run plugin process
 func (es *Elasticsearch) Run(ctx context.Context, done chan bool) {
 	es.logger.Metadata(logging.Metadata{"plugin": appname, "url": es.configuration.HostURL})
-	es.logger.Info("storing events and(or) logs to Elasticsearch.")
+	_ = es.logger.Info("storing events and(or) logs to Elasticsearch.")
 
 	if es.configuration.ResetIndices != nil {
 		err := es.client.IndicesDelete(es.configuration.ResetIndices)
 		if err != nil {
 			es.logger.Metadata(logging.Metadata{"plugin": appname, "error": err})
-			es.logger.Error("failed removing indices")
+			_ = es.logger.Error("failed removing indices")
 			done <- true
 			return
 		}
 		es.logger.Metadata(logging.Metadata{"plugin": appname, "indices": es.configuration.ResetIndices})
-		es.logger.Info("removed indices")
+		_ = es.logger.Info("removed indices")
 	}
 
 	wg := sync.WaitGroup{}
@@ -145,17 +145,17 @@ func (es *Elasticsearch) Run(ctx context.Context, done chan bool) {
 			case <-ctx.Done():
 				tick.Stop()
 				es.logger.Metadata(logging.Metadata{"plugin": appname})
-				es.logger.Debug("shutting down buffer flusher")
+				_ = es.logger.Debug("shutting down buffer flusher")
 				return
 			case <-tick.C:
 				es.bufferMutex.Lock()
 				for index, record := range es.buffer {
 					if err := es.client.Index(index, record, es.configuration.BulkIndex); err != nil {
 						es.logger.Metadata(logging.Metadata{"plugin": appname, "records": len(record), "index": index, "error": err})
-						es.logger.Error("failed to flush buffer - disregarding")
+						_ = es.logger.Error("failed to flush buffer - disregarding")
 					} else {
 						es.logger.Metadata(logging.Metadata{"plugin": appname, "records": len(record), "index": index})
-						es.logger.Debug("successfully flushed buffer")
+						_ = es.logger.Debug("successfully flushed buffer")
 					}
 					delete(es.buffer, index)
 				}
@@ -167,7 +167,7 @@ func (es *Elasticsearch) Run(ctx context.Context, done chan bool) {
 	// spawn index workers
 	for i := 0; i < es.configuration.IndexWorkers; i++ {
 		es.logger.Metadata(logging.Metadata{"plugin": appname, "worker-id": i})
-		es.logger.Debug("spawning index worker")
+		_ = es.logger.Debug("spawning index worker")
 		wg.Add(1)
 
 		go func(es *Elasticsearch, ctx context.Context, wg *sync.WaitGroup, i int) {
@@ -176,15 +176,15 @@ func (es *Elasticsearch) Run(ctx context.Context, done chan bool) {
 				select {
 				case <-ctx.Done():
 					es.logger.Metadata(logging.Metadata{"plugin": appname, "worker-id": i})
-					es.logger.Debug("shutting down index worker")
+					_ = es.logger.Debug("shutting down index worker")
 					return
 				case dumped := <-es.dump:
 					if err := es.client.Index(dumped.index, dumped.record, es.configuration.BulkIndex); err != nil {
 						es.logger.Metadata(logging.Metadata{"plugin": appname, "event": dumped.record, "error": err})
-						es.logger.Error("failed to index event - disregarding")
+						_ = es.logger.Error("failed to index event - disregarding")
 					} else {
 						es.logger.Metadata(logging.Metadata{"plugin": appname, "records": len(dumped.record)})
-						es.logger.Debug("successfully indexed document(s)")
+						_ = es.logger.Debug("successfully indexed document(s)")
 					}
 				}
 			}
@@ -194,7 +194,7 @@ func (es *Elasticsearch) Run(ctx context.Context, done chan bool) {
 
 	wg.Wait()
 	es.logger.Metadata(logging.Metadata{"plugin": appname})
-	es.logger.Info("exited")
+	_ = es.logger.Info("exited")
 }
 
 // Config implements application.Application
@@ -221,7 +221,7 @@ func (es *Elasticsearch) Config(c []byte) error {
 
 	if es.configuration.UseBasicAuth && !es.configuration.UseTLS {
 		es.logger.Metadata(logging.Metadata{"plugin": appname})
-		es.logger.Warn("insecure: using basic authentication without TLS enabled")
+		_ = es.logger.Warn("insecure: using basic authentication without TLS enabled")
 	}
 
 	es.client, err = lib.NewElasticClient(es.configuration)

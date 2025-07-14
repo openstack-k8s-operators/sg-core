@@ -11,7 +11,7 @@ type metric struct {
 	delete func()
 }
 
-func (m *metric) Expired(i time.Duration) bool {
+func (m *metric) Expired(_ time.Duration) bool {
 	return true
 }
 
