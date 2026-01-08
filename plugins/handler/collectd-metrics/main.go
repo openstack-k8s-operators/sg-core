@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/go-openapi/errors"
-	"github.com/infrawatch/sg-core/pkg/bus"
-	"github.com/infrawatch/sg-core/pkg/data"
-	"github.com/infrawatch/sg-core/pkg/handler"
-	"github.com/infrawatch/sg-core/plugins/handler/collectd-metrics/pkg/collectd"
+	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/pkg/handler"
+	"github.com/openstack-k8s-operators/sg-core/plugins/handler/collectd-metrics/pkg/collectd"
 )
 
 var (

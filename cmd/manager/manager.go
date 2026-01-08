@@ -10,10 +10,10 @@ import (
 	"sync"
 
 	"github.com/infrawatch/apputils/logging"
-	"github.com/infrawatch/sg-core/pkg/application"
-	"github.com/infrawatch/sg-core/pkg/bus"
-	"github.com/infrawatch/sg-core/pkg/handler"
-	"github.com/infrawatch/sg-core/pkg/transport"
+	"github.com/openstack-k8s-operators/sg-core/pkg/application"
+	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
+	"github.com/openstack-k8s-operators/sg-core/pkg/handler"
+	"github.com/openstack-k8s-operators/sg-core/pkg/transport"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )

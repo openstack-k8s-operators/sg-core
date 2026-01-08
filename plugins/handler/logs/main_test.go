@@ -3,8 +3,8 @@ package main
 import (
 	"testing"
 
-	"github.com/infrawatch/sg-core/pkg/data"
-	"github.com/infrawatch/sg-core/plugins/handler/logs/pkg/lib"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/plugins/handler/logs/pkg/lib"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

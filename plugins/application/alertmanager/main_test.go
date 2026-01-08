@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/infrawatch/apputils/logging"
-	"github.com/infrawatch/sg-core/pkg/bus"
-	"github.com/infrawatch/sg-core/pkg/data"
-	"github.com/infrawatch/sg-core/plugins/application/alertmanager/pkg/lib"
+	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/plugins/application/alertmanager/pkg/lib"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

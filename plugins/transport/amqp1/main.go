@@ -12,9 +12,9 @@ import (
 	amqp "github.com/Azure/go-amqp"
 
 	"github.com/infrawatch/apputils/logging"
-	"github.com/infrawatch/sg-core/pkg/config"
-	"github.com/infrawatch/sg-core/pkg/data"
-	"github.com/infrawatch/sg-core/pkg/transport"
+	"github.com/openstack-k8s-operators/sg-core/pkg/config"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/pkg/transport"
 )
 
 var (

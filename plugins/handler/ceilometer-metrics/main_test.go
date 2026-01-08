@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/infrawatch/sg-core/pkg/data"
-	"github.com/infrawatch/sg-core/plugins/handler/ceilometer-metrics/pkg/ceilometer"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/plugins/handler/ceilometer-metrics/pkg/ceilometer"
 	jsoniter "github.com/json-iterator/go"
 	"gopkg.in/go-playground/assert.v1"
 )

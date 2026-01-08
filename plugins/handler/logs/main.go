@@ -9,11 +9,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/infrawatch/sg-core/pkg/bus"
-	"github.com/infrawatch/sg-core/pkg/config"
-	"github.com/infrawatch/sg-core/pkg/data"
-	"github.com/infrawatch/sg-core/pkg/handler"
-	"github.com/infrawatch/sg-core/plugins/handler/logs/pkg/lib"
+	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
+	"github.com/openstack-k8s-operators/sg-core/pkg/config"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/pkg/handler"
+	"github.com/openstack-k8s-operators/sg-core/plugins/handler/logs/pkg/lib"
 )
 
 type logHandler struct {
