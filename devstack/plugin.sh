@@ -61,8 +61,7 @@ if is_service_enabled sg-core; then
         fi
 
         if [[ "$1" == "unstack" ]]; then
-            $SG_CORE_CONTAINER_EXECUTABLE stop sg-core
-            $SG_CORE_CONTAINER_EXECUTABLE rm -f sg-core
+            stop_process sg-core
         fi
 
         if [[ "$1" == "clean" ]]; then
