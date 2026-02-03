@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/infrawatch/sg-core/plugins/handler/sensubility-metrics/pkg/sensu"
+	"github.com/openstack-k8s-operators/sg-core/plugins/handler/sensubility-metrics/pkg/sensu"
 
-	"github.com/infrawatch/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
 	"gopkg.in/go-playground/assert.v1"
 )
 

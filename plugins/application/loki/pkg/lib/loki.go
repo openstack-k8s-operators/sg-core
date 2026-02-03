@@ -7,7 +7,7 @@ import (
 	"github.com/infrawatch/apputils/connector/loki"
 	"github.com/infrawatch/apputils/misc"
 
-	"github.com/infrawatch/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
 )
 
 // Creates labels used by Loki.

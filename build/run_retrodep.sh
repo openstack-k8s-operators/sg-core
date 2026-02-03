@@ -11,5 +11,5 @@
 #  * https://github.com/grs/go-license-summary
 #  * https://github.com/release-engineering/retrodep
 
-retrodep -importpath github.com/infrawatch/sg-core . | tee ./rh-manifest.txt
+retrodep -importpath github.com/openstack-k8s-operators/sg-core . | tee ./rh-manifest.txt
 ./build/update_license_info ./rh-manifest.txt .

@@ -1,4 +1,4 @@
-module github.com/infrawatch/sg-core
+module github.com/openstack-k8s-operators/sg-core
 
 go 1.21
 

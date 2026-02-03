@@ -5,9 +5,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/infrawatch/sg-core/pkg/bus"
-	"github.com/infrawatch/sg-core/pkg/data"
-	"github.com/infrawatch/sg-core/plugins/handler/events/pkg/lib"
+	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/plugins/handler/events/pkg/lib"
 	jsoniter "github.com/json-iterator/go"
 )
 

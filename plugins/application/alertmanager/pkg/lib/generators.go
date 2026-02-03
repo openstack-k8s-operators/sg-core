@@ -5,7 +5,7 @@ import (
 
 	"github.com/infrawatch/apputils/misc"
 
-	"github.com/infrawatch/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
 )
 
 const (

@@ -9,12 +9,12 @@ import (
 	"sync"
 
 	"github.com/infrawatch/apputils/logging"
-	"github.com/infrawatch/sg-core/pkg/application"
-	"github.com/infrawatch/sg-core/pkg/bus"
-	"github.com/infrawatch/sg-core/pkg/config"
-	"github.com/infrawatch/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/pkg/application"
+	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
+	"github.com/openstack-k8s-operators/sg-core/pkg/config"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
 
-	"github.com/infrawatch/sg-core/plugins/application/alertmanager/pkg/lib"
+	"github.com/openstack-k8s-operators/sg-core/plugins/application/alertmanager/pkg/lib"
 )
 
 const (

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/infrawatch/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
 )
 
 // SyslogSeverity holds received syslog severity and it's meaning

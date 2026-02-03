@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/infrawatch/sg-core/pkg/data"
+	"github.com/openstack-k8s-operators/sg-core/pkg/data"
 )
 
 // package application defines the interfaces for interacting with application plugins

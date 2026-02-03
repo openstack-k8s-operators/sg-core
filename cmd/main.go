@@ -12,8 +12,8 @@ import (
 
 	"github.com/infrawatch/apputils/logging"
 	"github.com/infrawatch/apputils/system"
-	"github.com/infrawatch/sg-core/cmd/manager"
-	"github.com/infrawatch/sg-core/pkg/config"
+	"github.com/openstack-k8s-operators/sg-core/cmd/manager"
+	"github.com/openstack-k8s-operators/sg-core/pkg/config"
 )
 
 func main() {

@@ -3,7 +3,7 @@ package handler
 import (
 	"context"
 
-	"github.com/infrawatch/sg-core/pkg/bus"
+	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
 )
 
 // package handler contains the interface description for handler plugins

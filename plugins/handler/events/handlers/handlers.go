@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"github.com/infrawatch/sg-core/pkg/bus"
-	"github.com/infrawatch/sg-core/plugins/handler/events/ceilometer"
-	"github.com/infrawatch/sg-core/plugins/handler/events/collectd"
+	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
+	"github.com/openstack-k8s-operators/sg-core/plugins/handler/events/ceilometer"
+	"github.com/openstack-k8s-operators/sg-core/plugins/handler/events/collectd"
 )
 
 func ceilometerEventHandler(blob []byte, epf bus.EventPublishFunc) error {

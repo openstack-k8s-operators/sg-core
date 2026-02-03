@@ -1,5 +1,5 @@
-[![Coverage Status](https://coveralls.io/repos/github/infrawatch/sg-core/badge.svg?branch=master)](https://coveralls.io/github/infrawatch/sg-core?branch=master)
-[![CI](https://github.com/infrawatch/sg-core/actions/workflows/tests.yml/badge.svg)](https://github.com/infrawatch/sg-core/actions/workflows/tests.yml)
+[![Coverage Status](https://coveralls.io/repos/github/openstack-k8s-operators/sg-core/badge.svg?branch=main)](https://coveralls.io/github/openstack-k8s-operators/sg-core?branch=main)
+[![CI](https://github.com/openstack-k8s-operators/sg-core/actions/workflows/tests.yml/badge.svg)](https://github.com/openstack-k8s-operators/sg-core/actions/workflows/tests.yml)
 # Plugins
 Default plugins exist in /plugins. Plugins can also be hosted as separate projects.
 
