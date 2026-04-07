@@ -185,8 +185,8 @@ func genName(cNameShards []string) string {
 
 func genLabels(m ceilometer.Metric, publisher string, cNameShards []string) ([]string, []string) {
 	//  TODO: set to persistent var
-	labelKeys := make([]string, 15+len(m.ResourceMetadata.UserMetadata))
-	labelVals := make([]string, 15+len(m.ResourceMetadata.UserMetadata))
+	labelKeys := make([]string, 18+len(m.ResourceMetadata.UserMetadata))
+	labelVals := make([]string, 18+len(m.ResourceMetadata.UserMetadata))
 	plugin := cNameShards[0]
 	pluginVal := m.ResourceID
 	if len(cNameShards) > 2 {
@@ -279,6 +279,7 @@ func genLabels(m ceilometer.Metric, publisher string, cNameShards []string) ([]s
 	if labelVals[index] != "" {
 		index++
 	}
+
 	if len(m.ResourceMetadata.UserMetadata) != 0 {
 		for key, value := range m.ResourceMetadata.UserMetadata {
 			labelKeys[index] = key
@@ -306,6 +307,25 @@ func genLabels(m ceilometer.Metric, publisher string, cNameShards []string) ([]s
 			labelVals[index] = m.ResourceMetadata.Flavor.Name
 			index++
 		}
+	}
+
+	// Add binary, zone, status labels for volume service health metrics
+	if m.ResourceMetadata.Binary != "" {
+		labelKeys[index] = "binary"
+		labelVals[index] = m.ResourceMetadata.Binary
+		index++
+	}
+
+	if m.ResourceMetadata.Zone != "" {
+		labelKeys[index] = "zone"
+		labelVals[index] = m.ResourceMetadata.Zone
+		index++
+	}
+
+	if m.ResourceMetadata.Status != "" {
+		labelKeys[index] = "status"
+		labelVals[index] = m.ResourceMetadata.Status
+		index++
 	}
 
 	return labelKeys[:index], labelVals[:index]
