@@ -16,12 +16,19 @@ var (
 )
 
 // Metedata represents metadataof a metric from ceilometer
+type Flavor struct {
+	ID   string `json:"id" msgpack:"id"`
+	Name string `json:"name" msgpack:"name"`
+}
+
 type Metadata struct {
-	Host         string            `json:"host" msgpack:"host"`
-	Name         string            `json:"name" msgpack:"name"`
-	DisplayName  string            `json:"display_name" msgpack:"display_name"`
-	InstanceHost string            `json:"instance_host" msgpack:"instance_host"`
-	UserMetadata map[string]string `json:"user_metadata" msgpack:"user_metadata"`
+	Host             string            `json:"host" msgpack:"host"`
+	Name             string            `json:"name" msgpack:"name"`
+	DisplayName      string            `json:"display_name" msgpack:"display_name"`
+	InstanceHost     string            `json:"instance_host" msgpack:"instance_host"`
+	Flavor           *Flavor           `json:"flavor" msgpack:"flavor"`
+	AvailabilityZone string            `json:"availability_zone" msgpack:"availability_zone"`
+	UserMetadata     map[string]string `json:"user_metadata" msgpack:"user_metadata"`
 }
 
 // Metric represents a single metric from ceilometer for unmarshalling
