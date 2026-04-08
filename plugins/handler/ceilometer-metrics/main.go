@@ -185,8 +185,8 @@ func genName(cNameShards []string) string {
 
 func genLabels(m ceilometer.Metric, publisher string, cNameShards []string) ([]string, []string) {
 	//  TODO: set to persistent var
-	labelKeys := make([]string, 12+len(m.ResourceMetadata.UserMetadata))
-	labelVals := make([]string, 12+len(m.ResourceMetadata.UserMetadata))
+	labelKeys := make([]string, 15+len(m.ResourceMetadata.UserMetadata))
+	labelVals := make([]string, 15+len(m.ResourceMetadata.UserMetadata))
 	plugin := cNameShards[0]
 	pluginVal := m.ResourceID
 	if len(cNameShards) > 2 {
@@ -283,6 +283,27 @@ func genLabels(m ceilometer.Metric, publisher string, cNameShards []string) ([]s
 		for key, value := range m.ResourceMetadata.UserMetadata {
 			labelKeys[index] = key
 			labelVals[index] = value
+			index++
+		}
+	}
+
+	// Add availability_zone label for loadbalancer metrics
+	if m.ResourceMetadata.AvailabilityZone != "" {
+		labelKeys[index] = "availability_zone"
+		labelVals[index] = m.ResourceMetadata.AvailabilityZone
+		index++
+	}
+
+	// Add flavor_id and flavor_name labels for compute metrics
+	if m.ResourceMetadata.Flavor != nil {
+		if m.ResourceMetadata.Flavor.ID != "" {
+			labelKeys[index] = "flavor_id"
+			labelVals[index] = m.ResourceMetadata.Flavor.ID
+			index++
+		}
+		if m.ResourceMetadata.Flavor.Name != "" {
+			labelKeys[index] = "flavor_name"
+			labelVals[index] = m.ResourceMetadata.Flavor.Name
 			index++
 		}
 	}
