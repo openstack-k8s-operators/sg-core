@@ -150,6 +150,72 @@ func TestGenLabelsSizes(t *testing.T) {
 		assert.Equal(t, len(labelKeys), 10)
 	})
 
+	t.Run("compute with flavor labels", func(t *testing.T) {
+		metric := ceilometer.Metric{
+			Source:        "openstack",
+			CounterName:   "cpu",
+			CounterType:   "gauge",
+			CounterUnit:   "ns",
+			CounterVolume: 1.048e+10,
+			UserID:        "user_id",
+			UserName:      "user_name",
+			ProjectID:     "bc25bb8f9160407ca2fdb65c5380c7f8",
+			ProjectName:   "test_project",
+			ResourceID:    "b8b5b487-33cf-4f54-8c24-25f4d075b149",
+			Timestamp:     "2021-03-30T15:20:19.891893",
+			ResourceMetadata: ceilometer.Metadata{
+				Host:        "hostid123",
+				DisplayName: "test-vm",
+				Name:        "instance-00000003",
+				Flavor: &ceilometer.Flavor{
+					ID:   "d1",
+					Name: "ds512M",
+				},
+			},
+		}
+
+		labelKeys, labelVals := genLabels(metric, "controller-0", []string{"cpu"})
+
+		assert.Equal(t, len(labelKeys), len(labelVals))
+
+		// should have 14 labels: cpu, publisher, type, counter, project, project_name, user, user_name, unit, resource, vm_instance, resource_name, flavor_id, flavor_name
+		assert.Equal(t, len(labelKeys), 14)
+
+		assert.Equal(t, labelKeys[12], "flavor_id")
+		assert.Equal(t, labelVals[12], "d1")
+		assert.Equal(t, labelKeys[13], "flavor_name")
+		assert.Equal(t, labelVals[13], "ds512M")
+	})
+
+	t.Run("loadbalancer with availability_zone", func(t *testing.T) {
+		metric := ceilometer.Metric{
+			Source:        "openstack",
+			CounterName:   "loadbalancer.operating",
+			CounterType:   "gauge",
+			CounterUnit:   "status",
+			CounterVolume: 3,
+			ProjectID:     "bc25bb8f9160407ca2fdb65c5380c7f8",
+			ProjectName:   "test_project",
+			ResourceID:    "bb4e7d03-4e51-4ff3-8c13-a2a34a62226b",
+			Timestamp:     "2021-03-30T15:20:19.891893",
+			ResourceMetadata: ceilometer.Metadata{
+				DisplayName:      "test-lb",
+				AvailabilityZone: "nova-az",
+			},
+		}
+
+		labelKeys, labelVals := genLabels(metric, "controller-0", []string{"loadbalancer", "operating"})
+
+		assert.Equal(t, len(labelKeys), len(labelVals))
+
+		// should have 10 labels: loadbalancer, publisher, type, counter, project, project_name, unit, resource, resource_name, availability_zone
+		assert.Equal(t, len(labelKeys), 10)
+
+		// verify availability_zone is present at the end
+		assert.Equal(t, labelKeys[9], "availability_zone")
+		assert.Equal(t, labelVals[9], "nova-az")
+	})
+
 	t.Run("exhaustive labels", func(t *testing.T) {
 		metric := ceilometer.Metric{
 			Source:        "openstack",
