@@ -1,5 +1,13 @@
 ---
 - project:
     name: openstack-k8s-operators/sg-core
-    templates:
-      - stf-crc-jobs
+    github-check:
+      jobs:
+        - telemetry-container-image-content-provider
+        - telemetry-openstack-meta-content-provider-master:
+            override-checkout: main
+        - functional-tests-osp18:
+            override-checkout: master
+            dependencies:
+              - telemetry-openstack-meta-content-provider-master
+              - telemetry-container-image-content-provider
