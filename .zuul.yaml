@@ -1,5 +1,38 @@
 ---
 - project:
     name: openstack-k8s-operators/sg-core
-    templates:
-      - stf-crc-jobs
+    github-check:
+      jobs:
+        - telemetry-container-image-content-provider:
+            override-checkout: master
+            vars:
+              container_images:
+                - src: "{{ ansible_user_dir }}/src/github.com/openstack-k8s-operators/sg-core"
+                  name: sg-core
+                  update_var: cifmw_update_containers_ceilometersgcoreImage
+            irrelevant-files: &irrelevant-files
+              - .github/.*
+              - ci/.*
+              - devstack/.*
+              - docs/.*
+              - generator/.*
+              - test-bench/.*
+              - OWNERS
+              - OWNERS_ALIASES
+              - LICENSE
+              - config.yaml
+              - .gitignore
+              - .golangci.yaml
+        - telemetry-openstack-meta-content-provider-master:
+            override-checkout: main
+            irrelevant-files: *irrelevant-files
+        - functional-tests-osp18:
+            required-projects:
+              - name: infrawatch/feature-verification-tests
+                override-checkout: master
+            dependencies:
+              - telemetry-openstack-meta-content-provider-master
+              - telemetry-container-image-content-provider
+            irrelevant-files: *irrelevant-files
+        - feature-verification-tests-noop:
+            files: *irrelevant-files
