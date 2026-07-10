@@ -234,9 +234,9 @@
             "availability_zone"
           ],
           "LabelVals": [
-            "operating",
+            "bb4e7d03-4e51-4ff3-8c13-a2a34a62226b",
             "telemetry.publisher.controller-0.redhat.local",
-            "loadbalancer",
+            "operating",
             "loadbalancer.operating",
             "bc25bb8f9160407ca2fdb65c5380c7f8",
             "test_project",
