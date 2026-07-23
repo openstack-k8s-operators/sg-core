@@ -216,6 +216,39 @@ func TestGenLabelsSizes(t *testing.T) {
 		assert.Equal(t, labelVals[9], "nova-az")
 	})
 
+	t.Run("volume service health labels", func(t *testing.T) {
+		metric := ceilometer.Metric{
+			Source:        "openstack",
+			CounterName:   "volume.service.health",
+			CounterType:   "gauge",
+			CounterUnit:   "health",
+			CounterVolume: 1,
+			ResourceID:    "cinder-volume@devstack@lvmdriver-1",
+			Timestamp:     "2021-03-30T15:20:19.891893",
+			ResourceMetadata: ceilometer.Metadata{
+				Host:   "devstack@lvmdriver-1",
+				Binary: "cinder-volume",
+				Zone:   "nova",
+				Status: "enabled",
+			},
+		}
+
+		labelKeys, labelVals := genLabels(metric, "controller-0", []string{"volume", "service", "health"})
+
+		assert.Equal(t, len(labelKeys), len(labelVals))
+
+		// should have 10 labels: volume, publisher, type, counter, unit, resource, vm_instance, binary, zone, status
+		assert.Equal(t, len(labelKeys), 10)
+
+		// verify the new labels are present at the end
+		assert.Equal(t, labelKeys[7], "binary")
+		assert.Equal(t, labelVals[7], "cinder-volume")
+		assert.Equal(t, labelKeys[8], "zone")
+		assert.Equal(t, labelVals[8], "nova")
+		assert.Equal(t, labelKeys[9], "status")
+		assert.Equal(t, labelVals[9], "enabled")
+	})
+
 	t.Run("exhaustive labels", func(t *testing.T) {
 		metric := ceilometer.Metric{
 			Source:        "openstack",

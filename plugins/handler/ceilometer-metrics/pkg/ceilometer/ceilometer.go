@@ -28,6 +28,9 @@ type Metadata struct {
 	InstanceHost     string            `json:"instance_host" msgpack:"instance_host"`
 	Flavor           *Flavor           `json:"flavor" msgpack:"flavor"`
 	AvailabilityZone string            `json:"availability_zone" msgpack:"availability_zone"`
+	Binary           string            `json:"binary" msgpack:"binary"`
+	Zone             string            `json:"zone" msgpack:"zone"`
+	Status           string            `json:"status" msgpack:"status"`
 	UserMetadata     map[string]string `json:"user_metadata" msgpack:"user_metadata"`
 }
 
