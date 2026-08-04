@@ -1,4 +1,6 @@
 name: Release sg-core
+permissions:
+  contents: read
 
 on:
   release:
@@ -15,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4.1.3
 
     - name: Tag image
-      uses: tinact/docker.image-retag@1.0.2
+      uses: tinact/docker.image-retag@684702232e2a3c29b4e5ca25d7d80f927d255c64 # 1.0.3
       with:
         image_name: ${{ env.imagenamespace }}/sg-core
         image_old_tag: ${{ github.sha }}
