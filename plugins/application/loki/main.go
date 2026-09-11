@@ -11,6 +11,7 @@ import (
 	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
 	"github.com/openstack-k8s-operators/sg-core/pkg/config"
 	"github.com/openstack-k8s-operators/sg-core/pkg/data"
+	sglib "github.com/infrawatch/sg-core/pkg/lib"
 	"github.com/pkg/errors"
 
 	"github.com/openstack-k8s-operators/sg-core/plugins/application/loki/pkg/lib"
@@ -58,7 +59,7 @@ func (l *Loki) ReceiveEvent(log data.Event) {
 
 // Run run loki application plugin
 func (l *Loki) Run(ctx context.Context, _ chan bool) {
-	l.logger.Metadata(logging.Metadata{"plugin": "loki", "url": l.config.Connection})
+	l.logger.Metadata(logging.Metadata{"plugin": "loki", "url": sglib.RedactURI(l.config.Connection)})
 	_ = l.logger.Info("storing logs to Loki.")
 	l.client.Start(nil, l.logChannel)
 
