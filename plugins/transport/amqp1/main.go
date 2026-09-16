@@ -15,6 +15,7 @@ import (
 	"github.com/openstack-k8s-operators/sg-core/pkg/config"
 	"github.com/openstack-k8s-operators/sg-core/pkg/data"
 	"github.com/openstack-k8s-operators/sg-core/pkg/transport"
+	"github.com/infrawatch/sg-core/pkg/lib"
 )
 
 var (
@@ -98,7 +99,7 @@ func (at *AMQP1) Run(ctx context.Context, w transport.WriteFn, _ chan bool) {
 
 	at.logger.Metadata(logging.Metadata{
 		"plugin":     appname,
-		"connection": fmt.Sprintf("%s/%s", at.conf.URI, at.receiver.Address()),
+		"connection": fmt.Sprintf("%s/%s", lib.RedactURI(at.conf.URI), at.receiver.Address()),
 	})
 	_ = at.logger.Info("listening")
 
@@ -175,7 +176,7 @@ func (at *AMQP1) Config(c []byte) error {
 	}
 
 	if at.conf.DumpMessages.Enabled {
-		at.dumpFile, err = os.OpenFile(at.conf.DumpMessages.Path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		at.dumpFile, err = os.OpenFile(at.conf.DumpMessages.Path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
 		if err != nil {
 			return err
 		}
