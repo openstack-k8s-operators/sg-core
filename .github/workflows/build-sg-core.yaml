@@ -58,7 +58,7 @@ jobs:
           ./build/Dockerfile
 
     - name: Push sg-core To ${{ env.imageregistry }}
-      uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
+      uses: redhat-actions/push-to-registry@94ade333c38ecc0e60e94785125d9a52ca423b37 # v2
       with:
         image: ${{ steps.build.outputs.image }}
         tags: ${{ steps.build.outputs.tags }}
@@ -79,7 +79,7 @@ jobs:
         GITHUB_SHA: ${{ github.sha }}
 
     - name: Push tag with digest ${{ env.OPERATOR_IMAGE_DIGEST }}
-      uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
+      uses: redhat-actions/push-to-registry@94ade333c38ecc0e60e94785125d9a52ca423b37 # v2
       with:
         image: sg-core
         tags: ${{ env.IMAGE_DIGEST }}
