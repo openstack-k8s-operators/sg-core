@@ -1,5 +1,5 @@
 # --- build smart gateway ---
-FROM registry.access.redhat.com/ubi9:latest AS builder
+FROM registry.access.redhat.com/ubi10:latest AS builder
 ENV GOPATH=/go
 ENV D=/go/src/github.com/openstack-k8s-operators/sg-core
 
@@ -14,7 +14,7 @@ RUN rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-SIG-OpsTools && 
 RUN go install golang.org/dl/go1.25.9@latest && /go/bin/go1.25.9 download && PRODUCTION_BUILD=true CONTAINER_BUILD=true GOCMD=/go/bin/go1.25.9 ./build.sh
 
 # --- end build, create smart gateway layer ---
-FROM registry.access.redhat.com/ubi9-minimal:latest
+FROM registry.access.redhat.com/ubi10-minimal:latest
 
 LABEL io.k8s.display-name="Smart Gateway" \
       io.k8s.description="A component of the Service Telemetry Framework on the server side that ingests data from AMQP 1.x and provides a metrics scrape endpoint for Prometheus, and forwards events to ElasticSearch" \
@@ -23,7 +23,6 @@ LABEL io.k8s.display-name="Smart Gateway" \
 COPY --from=builder /tmp/sg-core /
 COPY --from=builder /tmp/plugins/*.so /usr/lib64/sg-core/
 
-RUN useradd -ms /sbin/nologin sg
-USER sg
+USER nobody
 
 ENTRYPOINT ["/sg-core"]
