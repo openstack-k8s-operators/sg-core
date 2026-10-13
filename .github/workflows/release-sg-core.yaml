@@ -28,3 +28,13 @@ jobs:
         registry: ${{ env.imageregistry }}
         registry_username: ${{ secrets.QUAY_USERNAME }}
         registry_password: ${{ secrets.QUAY_PASSWORD }}
+
+    - name: Tag ubi9 image
+      uses: tinact/docker.image-retag@684702232e2a3c29b4e5ca25d7d80f927d255c64 # 1.0.3
+      with:
+        image_name: ${{ env.imagenamespace }}/sg-core
+        image_old_tag: ubi9-${{ github.sha }}
+        image_new_tag: ubi9-${{ github.event.release.tag_name }}
+        registry: ${{ env.imageregistry }}
+        registry_username: ${{ secrets.QUAY_USERNAME }}
+        registry_password: ${{ secrets.QUAY_PASSWORD }}

@@ -17,7 +17,6 @@ on:
 env:
   imageregistry: 'quay.io'
   imagenamespace: ${{ secrets.IMAGENAMESPACE || secrets.QUAY_USERNAME }}
-  latesttag: latest
 
 jobs:
   check-secrets:
@@ -34,26 +33,38 @@ jobs:
 
   build:
     needs: check-secrets
-    name: Build sg-core image using buildah
+    name: Build sg-core image (${{ matrix.ubi_version }}) using buildah
     runs-on: ubuntu-latest
     if: needs.check-secrets.outputs.missing-secrets != 'true'
+    strategy:
+      matrix:
+        include:
+          - ubi_version: ubi10
+            tag_prefix: ""
+          - ubi_version: ubi9
+            tag_prefix: "ubi9-"
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Set latest tag for non main branch
-      if: github.ref_name != 'main'
-      env:
-        BRANCH_NAME: ${{ github.ref_name }}
+    - name: Patch Dockerfile for ${{ matrix.ubi_version }}
+      if: matrix.ubi_version != 'ubi10'
+      run: sed -i 's/ubi10/${{ matrix.ubi_version }}/g' ./build/Dockerfile
+
+    - name: Set latest tag
       run: |
-        echo "latesttag=${BRANCH_NAME}-latest" >> $GITHUB_ENV
+        if [ "${{ github.ref_name }}" = "main" ]; then
+          echo "latesttag=${{ matrix.tag_prefix }}latest" >> $GITHUB_ENV
+        else
+          echo "latesttag=${{ github.ref_name }}-${{ matrix.tag_prefix }}latest" >> $GITHUB_ENV
+        fi
 
     - name: Buildah Action
       id: build
       uses: redhat-actions/buildah-build@719e3c40d8af9790c23eca13f7daa339f2867034 # v2
       with:
         image: sg-core
-        tags: ${{ env.latesttag }} ${{ github.sha }}
+        tags: ${{ env.latesttag }} ${{ matrix.tag_prefix }}${{ github.sha }}
         containerfiles: |
           ./build/Dockerfile
 
@@ -72,17 +83,17 @@ jobs:
       run: |
         DIGEST=$(cat digest.txt | sed -e 's|sha256:||')
         echo "IMAGE_DIGEST=$DIGEST" >> $GITHUB_ENV
-        podman tag "localhost/${IMAGE}:${GITHUB_SHA}" "${REGISTRY}/${IMAGE}:${DIGEST}"
+        podman tag "localhost/${IMAGE}:${{ matrix.tag_prefix }}${GITHUB_SHA}" "${REGISTRY}/${IMAGE}:${{ matrix.tag_prefix }}${DIGEST}"
       env:
         REGISTRY:  ${{ env.imageregistry }}/${{ env.imagenamespace }}
         IMAGE: sg-core
         GITHUB_SHA: ${{ github.sha }}
 
-    - name: Push tag with digest ${{ env.OPERATOR_IMAGE_DIGEST }}
+    - name: Push tag with digest ${{ env.IMAGE_DIGEST }}
       uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
       with:
         image: sg-core
-        tags: ${{ env.IMAGE_DIGEST }}
+        tags: ${{ matrix.tag_prefix }}${{ env.IMAGE_DIGEST }}
         registry: ${{ env.imageregistry }}/${{ env.imagenamespace }}
         username: ${{ secrets.QUAY_USERNAME }}
         password: ${{ secrets.QUAY_PASSWORD }}
