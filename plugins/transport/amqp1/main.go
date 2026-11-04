@@ -15,7 +15,7 @@ import (
 	"github.com/openstack-k8s-operators/sg-core/pkg/config"
 	"github.com/openstack-k8s-operators/sg-core/pkg/data"
 	"github.com/openstack-k8s-operators/sg-core/pkg/transport"
-	"github.com/infrawatch/sg-core/pkg/lib"
+	"github.com/openstack-k8s-operators/sg-core/pkg/lib"
 )
 
 var (

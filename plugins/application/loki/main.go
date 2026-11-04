@@ -11,7 +11,7 @@ import (
 	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
 	"github.com/openstack-k8s-operators/sg-core/pkg/config"
 	"github.com/openstack-k8s-operators/sg-core/pkg/data"
-	sglib "github.com/infrawatch/sg-core/pkg/lib"
+	sglib "github.com/openstack-k8s-operators/sg-core/pkg/lib"
 	"github.com/pkg/errors"
 
 	"github.com/openstack-k8s-operators/sg-core/plugins/application/loki/pkg/lib"
