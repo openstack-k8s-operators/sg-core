@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/infrawatch/apputils/logging"
+	"github.com/openstack-k8s-operators/sg-core/pkg/logging"
 	"github.com/openstack-k8s-operators/sg-core/pkg/application"
 	"github.com/openstack-k8s-operators/sg-core/pkg/bus"
 	"github.com/openstack-k8s-operators/sg-core/pkg/handler"

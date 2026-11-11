@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/infrawatch/apputils/logging"
+	"github.com/openstack-k8s-operators/sg-core/pkg/logging"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/go-playground/assert.v1"
 )
