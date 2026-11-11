@@ -23,16 +23,15 @@
               - config.yaml
               - .gitignore
               - .golangci.yaml
-        - telemetry-openstack-meta-content-provider-master:
-            override-checkout: main
-            irrelevant-files: *irrelevant-files
-        - functional-tests-osp18:
+        - functional-tests-osp19:
             required-projects:
               - name: infrawatch/feature-verification-tests
                 override-checkout: master
-            dependencies:
-              - telemetry-openstack-meta-content-provider-master
-              - telemetry-container-image-content-provider
+            vars:
+              # Override content_provider_registry_ip because there is no
+              # openstack-operator content provider job, which would set
+              # this value. Use the telemetry content provider instead.
+              content_provider_registry_ip: "{{ telemetry_content_provider_registry_ip | default('') }}"
             irrelevant-files: *irrelevant-files
         - feature-verification-tests-noop:
             files: *irrelevant-files
