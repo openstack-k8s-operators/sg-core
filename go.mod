@@ -1,18 +1,19 @@
 module github.com/openstack-k8s-operators/sg-core
 
-go 1.25.0
+go 1.26.0
 
 require (
 	collectd.org v0.5.0
 	github.com/Azure/go-amqp v0.13.9
 	github.com/elastic/go-elasticsearch/v7 v7.10.0
 	github.com/go-openapi/errors v0.20.0
-	github.com/google/uuid v1.2.0
+	github.com/google/uuid v1.6.0
 	github.com/infrawatch/apputils v0.0.0-20210809211320-3573b2937d14
+	github.com/infrawatch/sg-core v0.0.0-20260916065951-d858810de581
 	github.com/json-iterator/go v1.1.12
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.11.1
-	github.com/stretchr/testify v1.6.1
+	github.com/prometheus/client_golang v1.25.0
+	github.com/stretchr/testify v1.12.1
 	github.com/vmihailenco/msgpack/v5 v5.3.5
 	gopkg.in/errgo.v2 v2.1.0
 	gopkg.in/go-playground/assert.v1 v1.2.1
@@ -23,23 +24,22 @@ require (
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/go-ini/ini v1.62.0 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
-	github.com/golang/protobuf v1.5.4 // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1 // indirect
+	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
-	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/prometheus/client_model v0.2.0 // indirect
-	github.com/prometheus/common v0.29.0 // indirect
-	github.com/prometheus/procfs v0.6.0 // indirect
-	github.com/smartystreets/goconvey v1.7.2 // indirect
+	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
+	github.com/prometheus/client_model v0.6.3 // indirect
+	github.com/prometheus/common v0.72.0 // indirect
+	github.com/prometheus/procfs v0.22.0 // indirect
+	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
-	gopkg.in/ini.v1 v1.63.2 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
+	golang.org/x/sys v0.48.0 // indirect
+	google.golang.org/protobuf v1.36.12 // indirect
 )
