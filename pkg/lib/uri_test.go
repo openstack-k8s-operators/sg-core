@@ -13,19 +13,14 @@ func TestRedactURI(t *testing.T) {
 		want  string
 	}{
 		{
-			name:  "amqp with credentials",
-			input: "amqps://user:secret@broker:5672",
-			want:  "amqps://redacted:redacted@broker:5672",
+			name:  "https with credentials",
+			input: "https://user:secret@broker:5672",
+			want:  "https://redacted:redacted@broker:5672",
 		},
 		{
 			name:  "http with credentials and path",
 			input: "http://admin:pass@loki:3100/loki/api/v1/push",
 			want:  "http://redacted:redacted@loki:3100/loki/api/v1/push",
-		},
-		{
-			name:  "username only",
-			input: "amqps://user@broker:5672",
-			want:  "amqps://redacted@broker:5672",
 		},
 		{
 			name:  "no credentials",

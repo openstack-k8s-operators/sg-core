@@ -10,8 +10,8 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/infrawatch/apputils/logging"
-	"github.com/infrawatch/apputils/system"
+	"github.com/openstack-k8s-operators/sg-core/pkg/logging"
+	"github.com/openstack-k8s-operators/sg-core/pkg/system"
 	"github.com/openstack-k8s-operators/sg-core/cmd/manager"
 	"github.com/openstack-k8s-operators/sg-core/pkg/config"
 )
